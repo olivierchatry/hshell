@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-void command_exec(command_t* command) {
+void command_exec(command_t *command) {
 	int pid = fork();
 	if (pid) {
 		int status;

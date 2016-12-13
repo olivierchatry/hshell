@@ -1,18 +1,34 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "hshell.h"
+#include "hlib.h"
+
+void prompt_print(shell_t *shell) {
+	const char* prompt = shell_get_env(shell, "PS1");
+	if (!prompt) {
+		prompt = getuid() == 0 ? "#" : ">";
+	}
+	hprintf(prompt);
+}
 
 
-int main() {
-	while (1) {
+int main(int argc, char** argv, char** envp) {
+	shell_t shell;
+
+	shell_init(&shell, argc, argv, envp);
+	while (!shell.exit) {
 		command_t command;
+
+		prompt_print(&shell);
 
 		command_init(&command);	
 		command_get(&command, 0);
 		command_split(&command);
 		command_exec(&command);
-		printf("command : %s\n", command.line);
+
 		command_free(&command);
 	}
+	shell_free(&shell);
 }

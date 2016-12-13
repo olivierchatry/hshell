@@ -23,6 +23,15 @@
 	array##_size=0;\
 	array##_buffer_size=0
 
+#define ARRAY_REMOVE(array, index) array[index]=array[--array##_size]
+
+#define ARRAY_EACH(array, fct) { \
+	int count;\
+	for (count = 0; count < array##_size; ++count) {\
+		fct(array[count]);\
+	}\
+}
+	
 #define ARRAY_INIT(array) array=NULL;\
 	array##_size=0;\
 	array##_buffer_size=0

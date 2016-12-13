@@ -1,9 +1,17 @@
 SRCS=main.c \
+	hlib.c \
 	command_get.c \
 	command_free.c \
 	command_init.c \
 	command_split.c \
-	command_exec.c
+	command_exec.c \
+	shell_init.c \
+	shell_free.c \
+	shell_get_env_index.c \
+	shell_get_env.c \
+	shell_set_env.c \
+	shell_remove_env.c \
+	shell_add_env.c
 
 OBJS=$(SRCS:.c=.o)
 TARGET=shell
