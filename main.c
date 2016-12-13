@@ -22,7 +22,6 @@ int main(int argc, char** argv, char** envp) {
 		command_t command;
 
 		prompt_print(&shell);
-
 		command_init(&command);	
 		command_get(&command, 0);
 		command_split(&command);

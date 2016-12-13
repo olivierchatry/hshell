@@ -1,9 +1,15 @@
+#include <signal.h>
 #include "hshell.h"
 #include "hlib.h"
 
+static shell_t* global_shell;
+
+void signal_interrupt() {
+}
+
 void shell_init(shell_t* shell, int argc, char** argv, char **envp) {
 	int index = 1;
-
+	
 	shell->state = SHELL_STATE_INIT;
 	ARRAY_INIT(shell->env_keys);
 	ARRAY_INIT(shell->env_values);
@@ -22,4 +28,6 @@ void shell_init(shell_t* shell, int argc, char** argv, char **envp) {
 	}
 	shell->state = SHELL_STATE_RUN;
 	env_hook(shell, "");
+	global_shell = shell;
+	signal(SIGINT, signal_interrupt);
 }
