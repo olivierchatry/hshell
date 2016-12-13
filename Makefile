@@ -1,7 +1,9 @@
 SRCS=main.c \
 	command_get.c \
 	command_free.c \
-	command_init.c
+	command_init.c \
+	command_split.c \
+	command_exec.c
 
 OBJS=$(SRCS:.c=.o)
 TARGET=shell

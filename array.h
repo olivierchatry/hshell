@@ -14,7 +14,7 @@
 		array##_buffer_size += add_buffer_size;\
 	}\
 	array[array##_size++]=data
-
+	
 #define ARRAY(array) array;\
 	int array##_size;\
 	int array##_buffer_size
@@ -26,5 +26,6 @@
 #define ARRAY_INIT(array) array=NULL;\
 	array##_size=0;\
 	array##_buffer_size=0
-	
+
+#define ARRAY_LAST(array) array[array##_size - 1]	
 #endif
