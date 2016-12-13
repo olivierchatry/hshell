@@ -8,7 +8,7 @@
 
 #define ENV_BUFFER_SIZE	1024
 #define LINE_BUFFER_SIZE 4096
-
+#define PATH_BUFFER_SIZE 1024
 
 struct command_s {
 	char* 	ARRAY(line);
@@ -18,9 +18,11 @@ struct command_s {
 typedef struct command_s command_t;
 
 struct shell_s {
-	char	**ARRAY(env_key);
-	char	**ARRAY(env_value);
+	char	**ARRAY(env_keys);
+	char	**ARRAY(env_values);
 	int		exit;
+	char	**ARRAY(paths);
+	char*	paths_string;
 };
 
 typedef struct shell_s shell_t;
@@ -38,12 +40,15 @@ void	command_init(command_t *command);
 void	command_split(command_t *command);
 void	command_exec(command_t *command);
 
-void	shell_add_env(shell_t* shell, char* env);
+void	shell_env_add(shell_t* shell, char* env);
 void	shell_init(shell_t* shell, int argc, char** argv, char** envp);
 void	shell_free(shell_t* shell);
-void	shell_remove_env(shell_t *shell, const char* key);
-char	*shell_get_env(shell_t *shell, const char *key);
-int		shell_get_env_index(shell_t *shell, const char *key);
-char	*shell_set_env(shell_t *shell, const char *key, const char *value);
+void	shell_env_remove(shell_t *shell, const char* key);
+char	*shell_env_get(shell_t *shell, const char *key);
+int		shell_env_get_index(shell_t *shell, const char *key);
+char	*shell_env_set(shell_t *shell, const char *key, const char *value);
+
+void	shell_paths_parse(shell_t* shell);
+const char	*shell_paths_expand(shell_t *shell, const char* value);
 
 #endif

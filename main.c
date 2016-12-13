@@ -6,7 +6,7 @@
 #include "hlib.h"
 
 void prompt_print(shell_t *shell) {
-	const char* prompt = shell_get_env(shell, "PS1");
+	const char* prompt = shell_env_get(shell, "PS1");
 	if (!prompt) {
 		prompt = getuid() == 0 ? "#" : ">";
 	}

@@ -4,8 +4,8 @@
 void shell_init(shell_t* shell, int argc, char** argv, char **envp) {
 	int index = 1;
 
-	ARRAY_INIT(shell->env_key);
-	ARRAY_INIT(shell->env_value);
+	ARRAY_INIT(shell->env_keys);
+	ARRAY_INIT(shell->env_values);
 	shell->exit = 0;
 	while (index < argc) {
 		if (hstrcmp(argv[index], "--test") == 0) {
@@ -13,6 +13,6 @@ void shell_init(shell_t* shell, int argc, char** argv, char **envp) {
 		}
 	}
 	while (*envp) {
-		shell_add_env(shell, *envp++);
+		shell_env_add(shell, *envp++);
 	}
 }
