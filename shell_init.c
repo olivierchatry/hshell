@@ -13,6 +13,6 @@ void shell_init(shell_t* shell, int argc, char** argv, char **envp) {
 		}
 	}
 	while (*envp) {
-		shell_env_add(shell, *envp++);
+		env_add(shell, *envp++);
 	}
 }

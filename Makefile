@@ -7,13 +7,13 @@ SRCS=main.c \
 	command_exec.c \
 	shell_init.c \
 	shell_free.c \
-	shell_env_get_index.c \
-	shell_env_get.c \
-	shell_env_set.c \
-	shell_env_remove.c \
-	shell_env_add.c \
-	shell_paths_expand.c \
-	shell_paths_parse.c
+	env_get_index.c \
+	env_get.c \
+	env_set.c \
+	env_remove.c \
+	env_add.c \
+	paths_expand.c \
+	paths_parse.c
 
 OBJS=$(SRCS:.c=.o)
 TARGET=shell

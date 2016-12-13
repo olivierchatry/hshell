@@ -40,15 +40,16 @@ void	command_init(command_t *command);
 void	command_split(command_t *command);
 void	command_exec(command_t *command);
 
-void	shell_env_add(shell_t* shell, char* env);
 void	shell_init(shell_t* shell, int argc, char** argv, char** envp);
 void	shell_free(shell_t* shell);
-void	shell_env_remove(shell_t *shell, const char* key);
-char	*shell_env_get(shell_t *shell, const char *key);
-int		shell_env_get_index(shell_t *shell, const char *key);
-char	*shell_env_set(shell_t *shell, const char *key, const char *value);
 
-void	shell_paths_parse(shell_t* shell);
-const char	*shell_paths_expand(shell_t *shell, const char* value);
+void	env_add(shell_t* shell, char* env);
+void	env_remove(shell_t *shell, const char* key);
+char	*env_get(shell_t *shell, const char *key);
+int		env_get_index(shell_t *shell, const char *key);
+char	*env_set(shell_t *shell, const char *key, const char *value);
+
+void	paths_parse(shell_t* shell);
+const char	*paths_expand(shell_t *shell, const char* value);
 
 #endif
