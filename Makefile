@@ -5,6 +5,7 @@ SRCS=main.c \
 	command_init.c \
 	command_split.c \
 	command_exec.c \
+	command_builtins.c \
 	shell_init.c \
 	shell_free.c \
 	env_get_index.c \
@@ -12,8 +13,12 @@ SRCS=main.c \
 	env_set.c \
 	env_remove.c \
 	env_add.c \
+	env_hook.c \
+	env_rebuild_envp.c \
+	env_free_envp.c \
 	paths_expand.c \
-	paths_parse.c
+	paths_parse.c \
+	paths_free.c
 
 OBJS=$(SRCS:.c=.o)
 TARGET=shell

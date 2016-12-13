@@ -10,5 +10,6 @@ char* env_set(shell_t *shell, const char *key, const char *value) {
 	} else {
 		shell->env_values[index] = hstrdup(vvalue);
 	}
+	env_hook(shell, key);
 	return vvalue;
 }

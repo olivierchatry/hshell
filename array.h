@@ -1,5 +1,6 @@
 #ifndef __ARRAY_H__
 #define __ARRAY_H__
+#include <stdio.h>
 
 #define ARRAY_ADD(array, data, add_buffer_size) \
 	if ( (array##_size) >= (array##_buffer_size) ) {\
@@ -9,7 +10,9 @@
 		for (i = 0; i < array##_buffer_size * sizeof(array[0]); ++i) {\
 			((char*)array_add_next)[i] = ((char*)array)[i];\
 		}\
-		free(array);\
+		if (array) {\
+			free(array);\
+		}\
 		array = array_add_next;\
 		array##_buffer_size += add_buffer_size;\
 	}\
@@ -20,6 +23,7 @@
 	int array##_buffer_size
 
 #define ARRAY_FREE(array) free(array);\
+	array=NULL;\
 	array##_size=0;\
 	array##_buffer_size=0
 
@@ -28,7 +32,9 @@
 #define ARRAY_EACH(array, fct) { \
 	int count;\
 	for (count = 0; count < array##_size; ++count) {\
-		fct(array[count]);\
+		if (array[count]) {\
+			fct(array[count]);\
+		}\
 	}\
 }
 	

@@ -7,5 +7,6 @@ void env_remove(shell_t *shell, const char* key) {
 		free(shell->env_values[index]);
 		ARRAY_REMOVE(shell->env_keys, index);
 		ARRAY_REMOVE(shell->env_values, index);		
+		env_hook(shell, key);
 	}
 }

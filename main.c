@@ -18,7 +18,7 @@ int main(int argc, char** argv, char** envp) {
 	shell_t shell;
 
 	shell_init(&shell, argc, argv, envp);
-	while (!shell.exit) {
+	while (shell.exit == 0) {
 		command_t command;
 
 		prompt_print(&shell);
@@ -26,9 +26,10 @@ int main(int argc, char** argv, char** envp) {
 		command_init(&command);	
 		command_get(&command, 0);
 		command_split(&command);
-		command_exec(&command);
+		command_exec(&shell, &command);
 
 		command_free(&command);
 	}
 	shell_free(&shell);
+	return shell.exit_code;
 }

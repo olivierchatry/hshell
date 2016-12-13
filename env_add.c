@@ -1,7 +1,7 @@
 #include "hshell.h"
 #include "hlib.h"
 
-void	env_add(shell_t* shell, char* env) {
+void	env_add(shell_t *shell, char* env) {
 	const char *delim = "= ";
 	char *saveptr;
 	char *key = hstrtok_r(env, delim, &saveptr);
@@ -12,5 +12,6 @@ void	env_add(shell_t* shell, char* env) {
 		} else {
 			env_remove(shell, key);
 		}
+		env_hook(shell, key);
 	}
 }

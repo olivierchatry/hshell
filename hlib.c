@@ -9,9 +9,11 @@ int hstrcmp(const char *a, const char *b) {
 }
 
 int hstrlen(const char* str) {
-	const char* start = str;
-	while (*str++);
-	return (int) (str - start);
+	int	count = 0;
+	while (str[count]) {
+		count++;
+	}
+	return count;
 }
 
 char *hstrdup(const char *str) {
@@ -20,6 +22,7 @@ char *hstrdup(const char *str) {
 	while (*str) {
 		*tmp++ = *str++;
 	}
+	*tmp++ = 0;
 	return dup;
 }
 
@@ -39,6 +42,22 @@ const char*	hstrchr(const char *str, int c) {
 		str++;
 	}
 	return NULL;
+}
+
+char*	hstrcpy(char* dest, const char* src) {
+	char* temp = dest;
+	while (*src) {
+		*dest++ = *src++;
+	}
+	*dest = 0;
+	return temp;
+}
+
+char* hstrcat(char* dest, const char* src) {
+	while (*dest) {
+		dest++;
+	}
+	return hstrcpy(dest, src);
 }
 
 char* hstrtok_r(char *str, const char *delim, char **saveptr) {
