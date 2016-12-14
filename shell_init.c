@@ -1,3 +1,5 @@
+#include <unistd.h>
+#include <sys/types.h>
 #include <signal.h>
 #include "hshell.h"
 #include "hlib.h"
@@ -5,6 +7,8 @@
 static shell_t* global_shell;
 
 void signal_interrupt() {
+	const char* cancel_string = "";
+	write(global_shell->cancel_pipe[1], cancel_string, 1);
 }
 
 void shell_init(shell_t* shell, int argc, char** argv, char **envp) {
@@ -30,4 +34,5 @@ void shell_init(shell_t* shell, int argc, char** argv, char **envp) {
 	env_hook(shell, "");
 	global_shell = shell;
 	signal(SIGINT, signal_interrupt);
+	pipe(shell->cancel_pipe);
 }

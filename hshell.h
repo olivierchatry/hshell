@@ -10,10 +10,10 @@
 #define LINE_BUFFER_SIZE 4096
 #define PATH_BUFFER_SIZE 1024
 
-#define SHELL_STATE_NONE	0
-#define SHELL_STATE_INIT	1
-#define SHELL_STATE_RUN		2
-
+#define SHELL_STATE_NONE		0
+#define SHELL_STATE_INIT		1
+#define SHELL_STATE_RUN			2
+#define SHELL_STATE_CANCEL	4
 struct command_s {
 	char* 	ARRAY(line);
 	char** 	ARRAY(argv);
@@ -30,6 +30,7 @@ struct shell_s {
 	char*	paths_string;
 	char	**ARRAY(envp);
 	int 	state;
+	int		cancel_pipe[2];
 };
 
 typedef struct shell_s shell_t;
@@ -41,7 +42,7 @@ typedef struct shell_s shell_t;
 #define ERR_GET_COMMAND_READ		2
 #define ERR_GET_COMMAND_MEMORY	3
 
-int		command_get(command_t *command, int fd_from);
+int		command_get(shell_t *shell, command_t *command, int fd_from);
 void	command_free(command_t *command);
 void	command_init(command_t *command);
 void	command_split(command_t *command);

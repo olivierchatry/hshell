@@ -23,7 +23,7 @@ int main(int argc, char** argv, char** envp) {
 
 		prompt_print(&shell);
 		command_init(&command);	
-		command_get(&command, 0);
+		command_get(&shell, &command, 0);
 		command_split(&command);
 		command_exec(&shell, &command);
 
