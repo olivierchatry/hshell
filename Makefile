@@ -10,6 +10,9 @@ SRCS=main.c \
 	shell_init.c \
 	shell_free.c \
 	shell_getcwd.c \
+	alias_get_index.c \
+	alias_get.c \
+	alias_set.c \
 	env_get_index.c \
 	env_get.c \
 	env_set.c \

@@ -8,7 +8,7 @@
 void prompt_print(shell_t *shell) {
 	const char* prompt = env_get(shell, "PS1");
 	if (!prompt) {
-		prompt = getuid() == 0 ? "# " : "> ";
+		prompt = getuid() == 0 ? "# " : "$ ";
 	}
 	hprintf(prompt);
 }

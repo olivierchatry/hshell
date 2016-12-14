@@ -41,6 +41,8 @@ typedef struct command_s command_t;
 struct shell_s {
 	char	**ARRAY(env_keys);
 	char	**ARRAY(env_values);
+	char	**ARRAY(alias_keys);
+	char	**ARRAY(alias_values);
 	int		exit;
 	int		exit_code;
 	char	**ARRAY(paths);
@@ -70,6 +72,10 @@ void	command_lexer(command_t* command);
 void	shell_init(shell_t* shell, int argc, char** argv, char** envp);
 void	shell_free(shell_t* shell);
 void 	shell_getcwd(shell_t* shell);
+
+char	*alias_get(shell_t *shell, const char *key);
+char	*alias_set(shell_t *shell, char *alias, char *value);
+int		alias_get_index(shell_t *shell, const char *key);
 
 void	env_add(shell_t* shell, char* env);
 int		env_remove(shell_t *shell, const char* key);

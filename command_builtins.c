@@ -11,6 +11,12 @@ struct builtin_s {
 };
 
 
+void builtin_alias(shell_t *shell, command_tree_t *cmd, int *status) {
+	UNUSED(shell);
+	UNUSED(cmd);
+	UNUSED(status);
+}
+
 void builtin_env(shell_t *shell, command_tree_t *cmd, int *status) {
 	char	**envp = shell->envp;
 	char	*env_filter = cmd->argv_size > 2 ? cmd->argv[1] : NULL; 
