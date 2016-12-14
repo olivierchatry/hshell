@@ -98,7 +98,7 @@ void command_lexer(command_t* command) {
 			end = command_skip_any(start);
 			if (end-start > 0) {
 				ARRAY_ADD(cmd_tree->argv, hstrndup(start, end-start), 64);
-			} else {
+			} else if (*end) {
 				end++;
 			}
 		}		

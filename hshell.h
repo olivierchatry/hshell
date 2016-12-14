@@ -70,8 +70,8 @@ void	command_split(command_t *command);
 void	command_exec(shell_t *shell, command_t *command);
 int		command_builtins(shell_t *shell, command_tree_t *command, int *status);
 void	command_lexer(command_t *command);
-void	command_expand(shell_t *shell, command_t* command);
-
+void	command_expand(shell_t *shell, command_t *command);
+void	command_remove_comment(command_t *command);
 void	shell_init(shell_t* shell, int argc, char** argv, char** envp);
 void	shell_free(shell_t* shell);
 void 	shell_getcwd(shell_t* shell);
