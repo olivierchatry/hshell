@@ -24,6 +24,7 @@ void command_exec(shell_t *shell, command_t *command) {
 			int pid = fork();
 			if (pid) {
 				waitpid(pid, &status, 0);
+				shell->child_exit_code = status;
 			} else {
 				command_exec_child(shell, command, cmd);
 			}

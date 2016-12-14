@@ -51,6 +51,7 @@ struct shell_s {
 	char	**ARRAY(envp);
 	int 	state;
 	int		cancel_pipe[2];
+	int 	child_exit_code;
 };
 
 typedef struct shell_s shell_t;

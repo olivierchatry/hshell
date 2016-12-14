@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include "hshell.h"
 #include "hlib.h"
 
@@ -19,8 +20,18 @@ char	*env_expand(shell_t *shell, const char *str) {
 		int found = 0;
 		if (!inhib && *str == '$') {
 			const char *start = str + 1;
-			const char *end = env_skip_any(start);
-			const char *env = env_get_n(shell, start, end - start);
+			const char *end = start + 1;
+			const char *env = NULL;
+			char temp[64];
+
+			if (*start == '$' || *start == '?') {
+				sprintf(temp, "%u", *start == '?' ? shell->child_exit_code : getpid());
+				env = temp;
+			} else {
+				end = env_skip_any(start);
+				env = env_get_n(shell, start, end - start);
+			}
+
 			if (env) {
 				while (*env) {
 					ARRAY_ADD(expanded, *env, ENV_EXPAND_BUFFER_SIZE);
