@@ -10,7 +10,6 @@ void command_tree_free(struct command_tree_s* command) {
 }
 
 void command_free(command_t *command) {
-	ARRAY_FREE(command->argv);
 	ARRAY_FREE(command->line);	
 	ARRAY_EACH(command->tree, command_tree_free);
 	ARRAY_EACH(command->tree, free);

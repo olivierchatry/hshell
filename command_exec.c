@@ -29,8 +29,7 @@ void command_exec(shell_t *shell, command_t *command) {
 			}
 		}
 		
-		if ( ((status == 0) && (cmd->op == SHELL_OP_OR)) 
-			|| ((status != 0) && (cmd->op == SHELL_OP_AND))) {
+		if ( ((status == 0) && (cmd->op == SHELL_OP_OR)) || ((status != 0) && (cmd->op == SHELL_OP_AND))) {
 			while (*tree && (*tree)->op == cmd->op) {
 				tree++;
 			}

@@ -48,8 +48,8 @@ int main(int argc, char** argv, char** envp) {
 		command_init(&command);	
 		command_get(&shell, &command, 0);
 		if (command.line) {
+			command_expand(&shell, &command);
 			command_lexer(&command);
-			command_split(&command);
 			command_exec(&shell, &command);
 		}
 		command_free(&command);

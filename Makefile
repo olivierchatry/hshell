@@ -3,10 +3,10 @@ SRCS=main.c \
 	command_get.c \
 	command_free.c \
 	command_init.c \
-	command_split.c \
 	command_exec.c \
 	command_builtins.c \
 	command_lexer.c \
+	command_expand.c \
 	shell_init.c \
 	shell_free.c \
 	shell_getcwd.c \
@@ -22,6 +22,7 @@ SRCS=main.c \
 	env_hook.c \
 	env_rebuild_envp.c \
 	env_free_envp.c \
+	env_expand.c \
 	paths_expand.c \
 	paths_parse.c \
 	paths_free.c
