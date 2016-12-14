@@ -1,6 +1,6 @@
 #include "hshell.h"
 
-void env_remove(shell_t *shell, const char* key) {
+int env_remove(shell_t *shell, const char* key) {
 	int index = env_get_index(shell, key);
 	if (index != -1) {
 		free(shell->env_keys[index]);
@@ -8,5 +8,7 @@ void env_remove(shell_t *shell, const char* key) {
 		ARRAY_REMOVE(shell->env_keys, index);
 		ARRAY_REMOVE(shell->env_values, index);		
 		env_hook(shell, key);
+		return 1;
 	}
+	return 0;
 }

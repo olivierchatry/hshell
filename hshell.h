@@ -57,7 +57,7 @@ void	shell_init(shell_t* shell, int argc, char** argv, char** envp);
 void	shell_free(shell_t* shell);
 
 void	env_add(shell_t* shell, char* env);
-void	env_remove(shell_t *shell, const char* key);
+int		env_remove(shell_t *shell, const char* key);
 char	*env_get(shell_t *shell, const char *key);
 int		env_get_index(shell_t *shell, const char *key);
 char	*env_set(shell_t *shell, const char *key, const char *value);
