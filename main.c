@@ -9,8 +9,29 @@ void prompt_print(shell_t *shell) {
 	const char* prompt = env_get(shell, "PS1");
 	if (!prompt) {
 		prompt = getuid() == 0 ? "# " : "$ ";
-	}
+	} 
 	hprintf(prompt);
+	/*else {
+		char	*ARRAY(expanded);
+		int		len = hstrlen(prompt);
+		ARRAY_INIT(expanded);
+		while (*prompt) {
+			char add = *prompt; 
+			if (add == '\\') {
+				switch (*(prompt + 1)) {
+					case 'u':
+						break;
+					case 'h':
+						break;
+					case 'W':
+						break;
+					case '$':
+						break;
+				}
+			}
+		}
+		ARRAY_FREE(expanded);
+	}*/
 }
 
 

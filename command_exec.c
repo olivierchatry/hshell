@@ -3,7 +3,18 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-void command_exec(shell_t* shell, command_t *command) {
+static void command_exec_child(shell_t *shell, command_t *command, command_tree_t *cmd) {
+	char* alias = alias_get(shell, cmd->argv[0]);
+	char* exec_path = paths_expand(shell, alias ? alias : cmd->argv[0]);
+	execve(exec_path, cmd->argv, shell->envp);
+	hprintf("command not found.\n");
+	free(exec_path);
+	shell_free(shell);
+	command_free(command);
+	_exit(EXIT_FAILURE);	
+}
+
+void command_exec(shell_t *shell, command_t *command) {
 	int status = 0;
 	command_tree_t **tree = command->tree;
 	
@@ -14,27 +25,14 @@ void command_exec(shell_t* shell, command_t *command) {
 			if (pid) {
 				waitpid(pid, &status, 0);
 			} else {
-				char* exec_path = paths_expand(shell, cmd->argv[0]);
-				execve(exec_path, cmd->argv, shell->envp);
-				hprintf("command not found.\n");
-				free(exec_path);
-				shell_free(shell);
-				command_free(command);
-				_exit(EXIT_FAILURE);	
+				command_exec_child(shell, command, cmd);
 			}
 		}
 		
-		if (cmd->op == SHELL_OP_OR) {
-			if (status == 0) {
-				while (*tree && (*tree)->op == SHELL_OP_OR) {
-					tree++;
-				}
-			}
-		} else if (cmd->op == SHELL_OP_AND) {
-			if (status != 0) {
-				while (*tree && (*tree)->op == SHELL_OP_AND) {
-					tree++;
-				}
+		if ( ((status == 0) && (cmd->op == SHELL_OP_OR)) 
+			|| ((status != 0) && (cmd->op == SHELL_OP_AND))) {
+			while (*tree && (*tree)->op == cmd->op) {
+				tree++;
 			}
 		}
 		tree++;

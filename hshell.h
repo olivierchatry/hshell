@@ -76,6 +76,7 @@ void 	shell_getcwd(shell_t* shell);
 char	*alias_get(shell_t *shell, const char *key);
 char	*alias_set(shell_t *shell, char *alias, char *value);
 int		alias_get_index(shell_t *shell, const char *key);
+void	alias_add(shell_t *shell, char* env);
 
 void	env_add(shell_t* shell, char* env);
 int		env_remove(shell_t *shell, const char* key);

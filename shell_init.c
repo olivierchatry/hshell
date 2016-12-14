@@ -12,22 +12,25 @@ void signal_interrupt() {
 }
 
 void shell_init(shell_t* shell, int argc, char** argv, char **envp) {
-	int index = 1;
-
+	UNUSED(argc);
+	UNUSED(argv);
+	
 	shell->state = SHELL_STATE_INIT;
 	ARRAY_INIT(shell->env_keys);
 	ARRAY_INIT(shell->env_values);
+	ARRAY_INIT(shell->alias_keys);
+	ARRAY_INIT(shell->alias_values);
 	ARRAY_INIT(shell->paths);
 	ARRAY_INIT(shell->envp);
 	shell->paths_string = NULL;
 	shell->exit = 0;
 	shell->exit_code = 0;
-	while (index < argc) {
+	/*while (index < argc) {
 		if (hstrcmp(argv[index], "--test") == 0) {
 			hprintf("test");
 		}
 		index++;
-	}
+	}*/
 	while (*envp) {
 		env_add(shell, *envp++);
 	}

@@ -12,8 +12,19 @@ struct builtin_s {
 
 
 void builtin_alias(shell_t *shell, command_tree_t *cmd, int *status) {
-	UNUSED(shell);
-	UNUSED(cmd);
+	int index;
+	if (cmd->argv_size <= 2 || hstrcmp(cmd->argv[1], "-p") == 0) {
+		for (index = 0; index < shell->alias_keys_size; ++index) {
+			hprintf(shell->alias_keys[index]);
+			hprintf("=");
+			hprintf(shell->alias_values[index]);
+			hprintf("\n");
+		}
+	} else {
+		for (index = 1; index < cmd->argv_size - 1; ++index) {
+			alias_add(shell, cmd->argv[index]);
+		}
+	}
 	UNUSED(status);
 }
 
@@ -83,6 +94,7 @@ static struct builtin_s s_builtins[] = {
 	{"setenv", builtin_setenv},
 	{"unsetenv", builtin_unsetenv},
 	{"cd", builtin_cd},
+	{"alias", builtin_alias},
 	{NULL, NULL}
 };
 
