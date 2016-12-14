@@ -19,15 +19,18 @@ int main(int argc, char** argv, char** envp) {
 
 	shell_init(&shell, argc, argv, envp);
 	shell_getcwd(&shell);
+	
 	while (shell.exit == 0) {
 		command_t command;
 
 		prompt_print(&shell);
 		command_init(&command);	
 		command_get(&shell, &command, 0);
-		command_split(&command);
-		command_exec(&shell, &command);
-
+		if (command.line) {
+			command_lexer(&command);
+			command_split(&command);
+			command_exec(&shell, &command);
+		}
 		command_free(&command);
 	}
 	shell_free(&shell);

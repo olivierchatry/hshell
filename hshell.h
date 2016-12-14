@@ -18,9 +18,22 @@
 #define SHELL_STATE_RUN			2
 #define SHELL_STATE_CANCEL	4
 
+#define SHELL_OP_NONE				0
+#define SHELL_OP_AND				1
+#define SHELL_OP_OR					2
+
+struct command_tree_s {
+	char 									**ARRAY(argv);
+	struct command_tree_s	**ARRAY(child);
+	int										op;
+};
+
+typedef struct command_tree_s command_tree_t;
+
 struct command_s {
-	char* 	ARRAY(line);
-	char** 	ARRAY(argv);
+	char						*ARRAY(line);
+	char						**ARRAY(argv);
+	command_tree_t	**ARRAY(tree);
 };
 
 typedef struct command_s command_t;
@@ -51,7 +64,8 @@ void	command_free(command_t *command);
 void	command_init(command_t *command);
 void	command_split(command_t *command);
 void	command_exec(shell_t* shell, command_t *command);
-int		command_builtins(shell_t *shell, command_t *command);
+int		command_builtins(shell_t *shell, command_tree_t *command, int *status);
+void	command_lexer(command_t* command);
 
 void	shell_init(shell_t* shell, int argc, char** argv, char** envp);
 void	shell_free(shell_t* shell);

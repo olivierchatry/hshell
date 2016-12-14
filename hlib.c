@@ -56,6 +56,16 @@ char *hstrdup(const char *str) {
 	return dup;
 }
 
+char *hstrndup(const char *str, int n) {
+	char* dup = malloc(n + 1);
+	char* tmp = dup;
+	while (n-- && *str) {
+		*tmp++ = *str++;
+	}
+	*tmp++ = 0;
+	return dup;
+}
+
 int hprintf(const char* str, ...) {
 	int count = 0;
 	while (*str) {

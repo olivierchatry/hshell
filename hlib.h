@@ -5,6 +5,7 @@ int		hstrcmp(const char *a, const char *b);
 int		hstrncmp(const char *a, const char *b, int n);
 int		hstrlen(const char* str);
 char	*hstrdup(const char *str);
+char	*hstrndup(const char *str, int n);
 int		hprintf(const char* str, ...);
 char	*hstrtok_r(char *str, const char *delim, char **saveptr);
 const char *hstrchr(const char *str, int c);

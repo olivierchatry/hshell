@@ -7,11 +7,11 @@
 
 struct builtin_s {
 	char	*name;
-	void	(*fct)(shell_t *shell, command_t *command);
+	void	(*fct)(shell_t *shell, command_tree_t *command, int *status);
 };
 
 
-void builtin_env(shell_t *shell, command_t *cmd) {
+void builtin_env(shell_t *shell, command_tree_t *cmd, int *status) {
 	char	**envp = shell->envp;
 	char	*env_filter = cmd->argv_size > 2 ? cmd->argv[1] : NULL; 
 	int		env_filter_len = env_filter ? hstrlen(env_filter) : 0;
@@ -22,32 +22,36 @@ void builtin_env(shell_t *shell, command_t *cmd) {
 		}
 		envp++;
 	}
+	UNUSED(status)
 }
 
-void builtin_setenv(shell_t *shell, command_t *cmd) {
+void builtin_setenv(shell_t *shell, command_tree_t *cmd, int *status) {
 	if (cmd->argv_size > 3) {
 		env_set(shell, cmd->argv[1], cmd->argv[2]);
 	} else {
 		hprintf("missing argument\n");
+		*status = -1;
 	}
 }
 
-void builtin_exit(shell_t* shell, command_t* cmd) {
+void builtin_exit(shell_t* shell, command_tree_t* cmd, int *status) {
 	shell->exit = 1;
 	if (cmd->argv_size > 2) {
 		shell->exit_code = hatoi(cmd->argv[1]);
 	}
+	UNUSED(status)
 }
 
-void builtin_unsetenv(shell_t *shell, command_t *cmd) {
+void builtin_unsetenv(shell_t *shell, command_tree_t *cmd, int *status) {
 	if (cmd->argv_size > 2) {
 		env_remove(shell, cmd->argv[1]);
 	} else {
 		hprintf("missing argument\n");
+		*status = -1;
 	}
 }
 
-void builtin_cd(shell_t *shell, command_t *cmd) {
+void builtin_cd(shell_t *shell, command_tree_t *cmd, int *status) {
 	const char* path = NULL;
 	if (cmd->argv_size > 2) {
 		path = cmd->argv[1]; 
@@ -60,8 +64,9 @@ void builtin_cd(shell_t *shell, command_t *cmd) {
 			path = pws->pw_dir;
 		}
 	}
+	*status = -1;
 	if (path) {
-		chdir(path);
+		*status = chdir(path);
 	}
 	shell_getcwd(shell);
 }
@@ -75,12 +80,12 @@ static struct builtin_s s_builtins[] = {
 	{NULL, NULL}
 };
 
-
-int command_builtins(shell_t *shell, command_t *command) {
+int command_builtins(shell_t *shell, command_tree_t *command, int *status) {
 	int index = 0;
+	*status = 0;
 	while (s_builtins[index].name) {
 		if (hstrcmp(s_builtins[index].name, command->argv[0]) == 0) {
-			s_builtins[index].fct(shell, command);
+			s_builtins[index].fct(shell, command, status);
 			return 1;
 		}
 		index++;

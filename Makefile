@@ -6,6 +6,7 @@ SRCS=main.c \
 	command_split.c \
 	command_exec.c \
 	command_builtins.c \
+	command_lexer.c \
 	shell_init.c \
 	shell_free.c \
 	shell_getcwd.c \

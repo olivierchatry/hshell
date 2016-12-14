@@ -37,6 +37,7 @@ char	*paths_expand(shell_t *shell, const char* value) {
 	} 
 	
 	if (!found) {
+		free(temp);
 		temp = hstrdup(value);
 	}
 
