@@ -8,7 +8,10 @@ char* env_set(shell_t *shell, const char *key, const char *value) {
 		ARRAY_ADD(shell->env_keys, hstrdup(key), ENV_BUFFER_SIZE);
 		ARRAY_ADD(shell->env_values, vvalue, ENV_BUFFER_SIZE);
 	} else {
-		shell->env_values[index] = hstrdup(vvalue);
+		if (shell->env_values[index]) {
+			free(shell->env_values[index]);
+		}
+		shell->env_values[index] = vvalue;
 	}
 	env_hook(shell, key);
 	return vvalue;

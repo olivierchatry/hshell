@@ -1,4 +1,7 @@
 #include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
+
 #include "hshell.h"
 #include "hlib.h"
 
@@ -19,7 +22,6 @@ void builtin_env(shell_t *shell, command_t *cmd) {
 		}
 		envp++;
 	}
-	UNUSED(cmd);
 }
 
 void builtin_setenv(shell_t *shell, command_t *cmd) {
@@ -33,7 +35,7 @@ void builtin_setenv(shell_t *shell, command_t *cmd) {
 void builtin_exit(shell_t* shell, command_t* cmd) {
 	shell->exit = 1;
 	if (cmd->argv_size > 2) {
-		shell->exit_code = atoi(cmd->argv[1]);
+		shell->exit_code = hatoi(cmd->argv[1]);
 	}
 }
 
@@ -46,15 +48,19 @@ void builtin_unsetenv(shell_t *shell, command_t *cmd) {
 }
 
 void builtin_cd(shell_t *shell, command_t *cmd) {
-	if (cmd->argv_buffer_size > 2) {
-		char* path = cmd->argv[1]; 
-		if (hstrcmp(cmd->argv[1], "-") == 0) {
-			if (shell->previous_pwd) {
-				path = shell->previous_pwd; 
-			} else {
-				path = ".";
-			}
+	const char* path = NULL;
+	if (cmd->argv_size > 2) {
+		path = cmd->argv[1]; 
+		if (hstrcmp(path, "-") == 0) {
+			path = env_get(shell, "OLDPWD");
 		}
+	} else {
+		struct passwd *pws = getpwuid(geteuid());
+		if (pws) {
+			path = pws->pw_dir;
+		}
+	}
+	if (path) {
 		chdir(path);
 	}
 	shell_getcwd(shell);

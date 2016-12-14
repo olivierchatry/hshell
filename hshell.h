@@ -35,7 +35,6 @@ struct shell_s {
 	char	**ARRAY(envp);
 	int 	state;
 	int		cancel_pipe[2];
-	char*	previous_pwd;
 };
 
 typedef struct shell_s shell_t;

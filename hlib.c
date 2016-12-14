@@ -1,6 +1,29 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+
+int hatoi(const char* str) {
+	int number = 0;
+
+	const char* start = str;
+	const char* end;
+	
+	while (*str && !(*str >= '0' && *str <= '9' )) {
+		str++;
+	}
+	start = str;
+	while(*str && (*str >= '0' && *str <= '9' )) {
+		str++;
+	}
+	end = str;
+	while (start != end) {
+		number *= 10;
+		number += (*start - '0');
+		start++;
+	}
+	return number;
+}
+
 int hstrcmp(const char *a, const char *b) {
 	while (*a && (*a == *b)) {
 		a++, b++;
