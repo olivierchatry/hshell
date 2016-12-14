@@ -2,6 +2,7 @@
 #define __HLIB_H__
 
 int hstrcmp(const char *a, const char *b);
+int hstrncmp(const char *a, const char *b, int n);
 int hstrlen(const char* str);
 char *hstrdup(const char *str);
 int hprintf(const char* str, ...);

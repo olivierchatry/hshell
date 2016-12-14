@@ -13,7 +13,7 @@ void signal_interrupt() {
 
 void shell_init(shell_t* shell, int argc, char** argv, char **envp) {
 	int index = 1;
-	
+	shell->previous_pwd = NULL;	
 	shell->state = SHELL_STATE_INIT;
 	ARRAY_INIT(shell->env_keys);
 	ARRAY_INIT(shell->env_values);

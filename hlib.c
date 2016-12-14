@@ -8,6 +8,13 @@ int hstrcmp(const char *a, const char *b) {
 	return *a - *b;
 }
 
+int hstrncmp(const char *a, const char *b, int n) {
+	while (--n && *a && (*a == *b)) {
+		a++, b++;
+	}
+	return (*a - *b);
+}
+
 int hstrlen(const char* str) {
 	int	count = 0;
 	while (str[count]) {

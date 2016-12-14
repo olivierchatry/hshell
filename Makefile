@@ -8,6 +8,7 @@ SRCS=main.c \
 	command_builtins.c \
 	shell_init.c \
 	shell_free.c \
+	shell_getcwd.c \
 	env_get_index.c \
 	env_get.c \
 	env_set.c \

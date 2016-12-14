@@ -35,6 +35,7 @@ struct shell_s {
 	char	**ARRAY(envp);
 	int 	state;
 	int		cancel_pipe[2];
+	char*	previous_pwd;
 };
 
 typedef struct shell_s shell_t;
@@ -55,6 +56,7 @@ int		command_builtins(shell_t *shell, command_t *command);
 
 void	shell_init(shell_t* shell, int argc, char** argv, char** envp);
 void	shell_free(shell_t* shell);
+void 	shell_getcwd(shell_t* shell);
 
 void	env_add(shell_t* shell, char* env);
 int		env_remove(shell_t *shell, const char* key);

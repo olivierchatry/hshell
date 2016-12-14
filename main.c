@@ -18,6 +18,7 @@ int main(int argc, char** argv, char** envp) {
 	shell_t shell;
 
 	shell_init(&shell, argc, argv, envp);
+	shell_getcwd(&shell);
 	while (shell.exit == 0) {
 		command_t command;
 

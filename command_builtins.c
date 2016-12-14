@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include "hshell.h"
 #include "hlib.h"
 
@@ -8,10 +9,14 @@ struct builtin_s {
 
 
 void builtin_env(shell_t *shell, command_t *cmd) {
-	char** envp = shell->envp;
+	char	**envp = shell->envp;
+	char	*env_filter = cmd->argv_size > 2 ? cmd->argv[1] : NULL; 
+	int		env_filter_len = env_filter ? hstrlen(env_filter) : 0;
 	while (*envp) {
-		hprintf(*envp);
-		hprintf("\n");
+		if ( (env_filter_len == 0) || (hstrncmp(env_filter, *envp, env_filter_len) == 0)) {
+			hprintf(*envp);
+			hprintf("\n");
+		}
 		envp++;
 	}
 	UNUSED(cmd);
@@ -40,11 +45,27 @@ void builtin_unsetenv(shell_t *shell, command_t *cmd) {
 	}
 }
 
+void builtin_cd(shell_t *shell, command_t *cmd) {
+	if (cmd->argv_buffer_size > 2) {
+		char* path = cmd->argv[1]; 
+		if (hstrcmp(cmd->argv[1], "-") == 0) {
+			if (shell->previous_pwd) {
+				path = shell->previous_pwd; 
+			} else {
+				path = ".";
+			}
+		}
+		chdir(path);
+	}
+	shell_getcwd(shell);
+}
+
 static struct builtin_s s_builtins[] = {
 	{"exit", builtin_exit},
 	{"env", builtin_env},
 	{"setenv", builtin_setenv},
 	{"unsetenv", builtin_unsetenv},
+	{"cd", builtin_cd},
 	{NULL, NULL}
 };
 
