@@ -46,13 +46,16 @@ int main(int argc, char** argv, char** envp) {
 
 		prompt_print(&shell);
 		command_init(&command);	
-		command_get(&shell, &command, 0);
-		if (command.line) {
-			command_remove_comment(&command);
-			command_expand(&shell, &command);
-			command_lexer(&command);
-			command_remove_quote(&command);
-			command_exec(&shell, &command);
+		if (command_get(&shell, &command, 0) == ERR_GET_COMMAND_EOF) {
+			shell.exit = 1;
+		} else {
+			if (command.line) {
+				command_remove_comment(&command);
+				command_expand(&shell, &command);
+				command_lexer(&command);
+				command_remove_quote(&command);
+				command_exec(&shell, &command);
+			}
 		}
 		command_free(&command);
 	}

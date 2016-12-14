@@ -47,11 +47,12 @@ struct shell_s {
 	int		exit;
 	int		exit_code;
 	char	**ARRAY(paths);
-	char*	paths_string;
+	char  *paths_string;
 	char	**ARRAY(envp);
 	int 	state;
 	int		cancel_pipe[2];
 	int 	child_exit_code;
+	char  *command_reminder;
 };
 
 typedef struct shell_s shell_t;
@@ -62,6 +63,7 @@ typedef struct shell_s shell_t;
 #define ERR_GET_COMMAND_TO_BIG	1
 #define ERR_GET_COMMAND_READ		2
 #define ERR_GET_COMMAND_MEMORY	3
+#define ERR_GET_COMMAND_EOF			4
 
 int		command_get(shell_t *shell, command_t *command, int fd_from);
 void	command_free(command_t *command);

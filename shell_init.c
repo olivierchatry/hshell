@@ -22,6 +22,7 @@ void shell_init(shell_t* shell, int argc, char** argv, char **envp) {
 	ARRAY_INIT(shell->alias_values);
 	ARRAY_INIT(shell->paths);
 	ARRAY_INIT(shell->envp);
+	shell->command_reminder = NULL;
 	shell->child_exit_code = 0;
 	shell->paths_string = NULL;
 	shell->exit = 0;
@@ -38,6 +39,6 @@ void shell_init(shell_t* shell, int argc, char** argv, char **envp) {
 	shell->state = SHELL_STATE_RUN;
 	env_hook(shell, "");
 	global_shell = shell;
-	signal(SIGINT, signal_interrupt);
+	// signal(SIGINT, signal_interrupt);
 	pipe(shell->cancel_pipe);
 }

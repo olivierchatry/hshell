@@ -20,21 +20,23 @@ void command_exec(shell_t *shell, command_t *command) {
 	
 	while (*tree) {
 		command_tree_t *cmd = *tree;
-		if (!command_builtins(shell, cmd, &status)) {
-			int pid = fork();
-			if (pid) {
-				waitpid(pid, &status, 0);
-				shell->child_exit_code = status;
-			} else {
-				command_exec_child(shell, command, cmd);
+		if (cmd->argv_size > 1) {
+			if (!command_builtins(shell, cmd, &status)) {
+				int pid = fork();
+				if (pid) {
+					waitpid(pid, &status, 0);
+					shell->child_exit_code = status;
+				} else {
+					command_exec_child(shell, command, cmd);
+				}
+			}
+			
+			if ( ((status == 0) && (cmd->op == SHELL_OP_OR)) || ((status != 0) && (cmd->op == SHELL_OP_AND))) {
+				while (*tree && (*tree)->op == cmd->op) {
+					tree++;
+				}
 			}
 		}
-		
-		if ( ((status == 0) && (cmd->op == SHELL_OP_OR)) || ((status != 0) && (cmd->op == SHELL_OP_AND))) {
-			while (*tree && (*tree)->op == cmd->op) {
-				tree++;
-			}
-		}
-		tree++;
+		tree++;			
 	}
 }
