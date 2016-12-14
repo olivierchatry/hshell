@@ -49,8 +49,13 @@ static const char *command_skip_space(const char *str) {
 static const char *command_skip_any(const char* str) {
 	char		*delims=" \t\n&|;";
 	char		inhib = 0;
-	while (*str && (inhib || (hstrchr(delims, *str) == NULL))) {
+	char		quote = 0;
+
+	while (*str && (inhib || quote || (hstrchr(delims, *str) == NULL))) {
 		inhib = *str == '\\';
+		if (*str == '"') {
+			quote = !quote;
+		}
 		str++;
 	}
 	return str;

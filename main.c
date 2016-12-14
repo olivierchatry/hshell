@@ -51,6 +51,7 @@ int main(int argc, char** argv, char** envp) {
 			command_remove_comment(&command);
 			command_expand(&shell, &command);
 			command_lexer(&command);
+			command_remove_quote(&command);
 			command_exec(&shell, &command);
 		}
 		command_free(&command);

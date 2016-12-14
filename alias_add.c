@@ -8,7 +8,7 @@ void	alias_add(shell_t *shell, char* env) {
 	if (key) {
 		if (!value) {
 			value = "";
-		}
+		}		
 		alias_set(shell, key, value);
 	}
 }

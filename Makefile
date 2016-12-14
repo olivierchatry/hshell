@@ -8,6 +8,7 @@ SRCS=main.c \
 	command_lexer.c \
 	command_expand.c \
 	command_remove_comment.c \
+	command_remove_quote.c \
 	shell_init.c \
 	shell_free.c \
 	shell_getcwd.c \

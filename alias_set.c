@@ -3,6 +3,7 @@
 
 char* alias_set(shell_t *shell, char *alias, char *value) {
 	int index = alias_get_index(shell, alias);
+	
 	char* vvalue = hstrdup(value);
 	if (index == -1) {
 		ARRAY_ADD(shell->alias_keys, hstrdup(alias), ENV_BUFFER_SIZE);
