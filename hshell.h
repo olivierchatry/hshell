@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include "array.h"
 
+#define UNUSED(x) (void)x;
+
+
 #define COMMAND_GET_MAXIMUM_CMD_SIZE 4096*4096
 
 #define ENV_BUFFER_SIZE	1024
@@ -14,6 +17,7 @@
 #define SHELL_STATE_INIT		1
 #define SHELL_STATE_RUN			2
 #define SHELL_STATE_CANCEL	4
+
 struct command_s {
 	char* 	ARRAY(line);
 	char** 	ARRAY(argv);

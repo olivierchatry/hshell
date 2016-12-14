@@ -6,7 +6,19 @@ struct builtin_s {
 	void	(*fct)(shell_t *shell, command_t *command);
 };
 
+
+void builtin_env(shell_t *shell, command_t *cmd) {
+	char** envp = shell->envp;
+	while (*envp) {
+		hprintf(*envp);
+		hprintf("\n");
+		envp++;
+	}
+	UNUSED(cmd);
+}
+
 static struct builtin_s s_builtins[] = {
+	{"env", builtin_env},
 	{NULL, NULL}
 };
 

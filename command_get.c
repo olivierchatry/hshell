@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include "hshell.h"
+#include "hlib.h"
 
 static int command_wait(shell_t *shell, int fd) {
 	fd_set rds;
@@ -53,8 +54,7 @@ int command_get(shell_t *shell, command_t *command, int fd_from) {
 				}
 			}
 		} else {
-			const char *newline = "\n";
-			write(0, newline, 1);
+			hprintf("\n");
 			ate = 0;
 			ARRAY_FREE(command->line);
 		}
