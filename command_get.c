@@ -36,7 +36,7 @@ int command_copy_reminder(shell_t *shell, char *read_buffer) {
 	return have;
 }
 
-int command_get(shell_t *shell, command_t *command, int fd_from) {
+int command_get(shell_t *shell, command_chain_t *chain, int fd_from) {
 	int		inhib_next = 0;
 	int		count;
 	char	read_buffer[LINE_BUFFER_SIZE];
@@ -46,7 +46,7 @@ int command_get(shell_t *shell, command_t *command, int fd_from) {
 	command_copy_reminder(shell, read_buffer);
 	count = hstrlen(read_buffer);
 	while (ate) {
-		if (command->line_size > COMMAND_GET_MAXIMUM_CMD_SIZE) {
+		if (chain->line_size > COMMAND_GET_MAXIMUM_CMD_SIZE) {
 			return ERR_GET_COMMAND_TO_BIG;
 		}
 		if (count || command_wait(shell, fd_from)) {
@@ -70,15 +70,15 @@ int command_get(shell_t *shell, command_t *command, int fd_from) {
 					ate = 0;
 				}
 				inhib_next = ate == '\\';
-				ARRAY_ADD(command->line, ate, LINE_BUFFER_SIZE);
-				if (command->line == NULL) {
+				ARRAY_ADD(chain->line, ate, LINE_BUFFER_SIZE);
+				if (chain->line == NULL) {
 					return ERR_GET_COMMAND_MEMORY;
 				}
 			}
 		} else {
 			hprintf("\n");
 			ate = 0;
-			ARRAY_FREE(command->line);
+			ARRAY_FREE(chain->line);
 		}
 	}
 	return OK;

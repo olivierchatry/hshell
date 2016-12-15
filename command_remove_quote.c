@@ -17,11 +17,11 @@ void command_remove_quote_str(char* str) {
 	}
 }
 
-void command_remove_quote_r(command_tree_t *command) {
+void command_remove_quote_r(command_t *command) {
 	ARRAY_EACH(command->argv, command_remove_quote_str);
-	ARRAY_EACH(command->child, command_remove_quote_r);
+	ARRAY_EACH(command->children, command_remove_quote_r);
 }
 
-void command_remove_quote(command_t* command) {
-	ARRAY_EACH(command->tree, command_remove_quote_r);
+void command_remove_quote(command_chain_t* chain) {
+	ARRAY_EACH(chain->commands, command_remove_quote_r);
 }

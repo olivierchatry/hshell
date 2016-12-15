@@ -1,11 +1,11 @@
 #include "hshell.h"
 
-void command_expand(shell_t *shell, command_t* command) {
+void command_expand(shell_t *shell, command_chain_t* chain) {
 	char* expanded;
 	
-	expanded = env_expand(shell, command->line);
+	expanded = env_expand(shell, chain->line);
 	if (expanded) {
-		free(command->line);
-		command->line = expanded;
+		free(chain->line);
+		chain->line = expanded;
 	}
 }

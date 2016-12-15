@@ -19,7 +19,6 @@ void shell_init(shell_t* shell, int argc, char** argv, char **envp) {
 	ARRAY_INIT(shell->env_keys);
 	ARRAY_INIT(shell->env_values);
 	ARRAY_INIT(shell->alias_keys);
-	ARRAY_INIT(shell->alias_values);
 	ARRAY_INIT(shell->alias_commands);
 	ARRAY_INIT(shell->paths);
 	ARRAY_INIT(shell->envp);

@@ -42,22 +42,23 @@ int main(int argc, char** argv, char** envp) {
 	shell_getcwd(&shell);
 	
 	while (shell.exit == 0) {
-		command_t command;
+		command_chain_t chain;
 
 		prompt_print(&shell);
-		command_init(&command);	
-		if (command_get(&shell, &command, 0) == ERR_GET_COMMAND_EOF) {
+		command_init(&chain);	
+		if (command_get(&shell, &chain, 0) == ERR_GET_COMMAND_EOF) {
 			shell.exit = 1;
 		} else {
-			if (command.line) {
-				command_remove_comment(&command);
-				command_expand(&shell, &command);
-				command_lexer(&command);
-				command_remove_quote(&command);
-				command_exec(&shell, &command);
+			if (chain.line) {
+				command_remove_comment(&chain);
+				command_expand(&shell, &chain);
+				command_lexer(&chain);
+				alias_expand(&shell, &chain);
+				command_remove_quote(&chain);
+				command_exec(&shell, &chain);
 			}
 		}
-		command_free(&command);
+		command_free(&chain);
 	}
 	shell_free(&shell);
 	return shell.exit_code;

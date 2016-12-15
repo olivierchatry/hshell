@@ -24,36 +24,35 @@
 #define SHELL_OP_AND				1
 #define SHELL_OP_OR					2
 
-struct command_tree_s {
-	char 									**ARRAY(argv);
-	struct command_tree_s	**ARRAY(child);
-	int										op;
-};
-
-typedef struct command_tree_s command_tree_t;
-
 struct command_s {
-	char						*ARRAY(line);
-	command_tree_t	**ARRAY(tree);
+	char 							**ARRAY(argv);
+	struct command_s	**ARRAY(children);
+	int								op;
 };
 
 typedef struct command_s command_t;
 
+struct command_chain_s {
+	char			*ARRAY(line);
+	command_t	**ARRAY(commands);
+};
+
+typedef struct command_chain_s command_chain_t;
+
 struct shell_s {
-	char			**ARRAY(env_keys);
-	char			**ARRAY(env_values);
-	char			**ARRAY(alias_keys);
-	char			**ARRAY(alias_values);
-	command_t	**ARRAY(alias_commands);
-	int				exit;
-	int				exit_code;
-	char			**ARRAY(paths);
-	char  		*paths_string;
-	char			**ARRAY(envp);
-	int 			state;
-	int				cancel_pipe[2];
-	int 			child_exit_code;
-	char  		*command_reminder;
+	char						**ARRAY(env_keys);
+	char						**ARRAY(env_values);
+	char						**ARRAY(alias_keys);
+	command_chain_t	**ARRAY(alias_commands);
+	int							exit;
+	int							exit_code;
+	char						**ARRAY(paths);
+	char  					*paths_string;
+	char						**ARRAY(envp);
+	int 						state;
+	int							cancel_pipe[2];
+	int 						child_exit_code;
+	char  					*command_reminder;
 };
 
 typedef struct shell_s shell_t;
@@ -66,25 +65,26 @@ typedef struct shell_s shell_t;
 #define ERR_GET_COMMAND_MEMORY	3
 #define ERR_GET_COMMAND_EOF			4
 
-int		command_get(shell_t *shell, command_t *command, int fd_from);
-void	command_free(command_t *command);
-void	command_init(command_t *command);
-void	command_split(command_t *command);
-void	command_exec(shell_t *shell, command_t *command);
-int		command_builtins(shell_t *shell, command_tree_t *command, int *status);
-void	command_lexer(command_t *command);
-void	command_expand(shell_t *shell, command_t *command);
-void	command_remove_comment(command_t *command);
-void	command_remove_quote(command_t* command);
+int		command_get(shell_t *shell, command_chain_t *command, int fd_from);
+void	command_free(command_chain_t *command);
+void	command_init(command_chain_t *command);
+void	command_split(command_chain_t *command);
+void	command_exec(shell_t *shell, command_chain_t *command);
+int		command_builtins(shell_t *shell, command_t *command, int *status);
+void	command_lexer(command_chain_t *command);
+void	command_expand(shell_t *shell, command_chain_t *command);
+void	command_remove_comment(command_chain_t *command);
+void	command_remove_quote(command_chain_t* command);
 
 void	shell_init(shell_t* shell, int argc, char** argv, char** envp);
 void	shell_free(shell_t* shell);
 void 	shell_getcwd(shell_t* shell);
 
-char	*alias_get(shell_t *shell, const char *key);
-char	*alias_set(shell_t *shell, char *alias, char *value);
-int		alias_get_index(shell_t *shell, const char *key);
-void	alias_add(shell_t *shell, char* env);
+command_chain_t	*alias_get(shell_t *shell, const char *key);
+command_chain_t	*alias_set(shell_t *shell, char *alias, char *value);
+void 						alias_expand(shell_t* shell, command_chain_t* chain);
+int							alias_get_index(shell_t *shell, const char *key);
+void						alias_add(shell_t *shell, char* env);
 
 void	env_add(shell_t* shell, char* env);
 int		env_remove(shell_t *shell, const char* key);

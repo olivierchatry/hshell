@@ -69,17 +69,17 @@ static token_t *command_find_token(const char* str) {
 	return tokens;
 }
 
-command_tree_t	*command_tree_create() {
-	command_tree_t *cmd_tree = malloc(sizeof(command_tree_t));
-	ARRAY_INIT(cmd_tree->argv);
-	ARRAY_INIT(cmd_tree->child);
-	cmd_tree->op = SHELL_OP_NONE;
-	return cmd_tree;
+command_t	*command_create() {
+	command_t *cmd = malloc(sizeof(command_t));
+	ARRAY_INIT(cmd->argv);
+	ARRAY_INIT(cmd->children);
+	cmd->op = SHELL_OP_NONE;
+	return cmd;
 }
 
-void command_lexer(command_t* command) {
-	const char			*line = command->line;
-	command_tree_t	*cmd_tree = command_tree_create();
+void command_lexer(command_chain_t *chain) {
+	const char			*line = chain->line;
+	command_t	*cmd = command_create();
 	
 	while (*line) {
 		const char	*start = command_skip_space(line);
@@ -91,25 +91,25 @@ void command_lexer(command_t* command) {
 				case SHELL_OP_OR:
 				case SHELL_OP_AND:
 				case SHELL_OP_NONE:
-					if (cmd_tree) {
-						cmd_tree->op = token->id;
-						ARRAY_ADD(cmd_tree->argv, NULL, 64);
-						ARRAY_ADD(command->tree, cmd_tree, 16);
-						cmd_tree = command_tree_create();
+					if (cmd) {
+						cmd->op = token->id;
+						ARRAY_ADD(cmd->argv, NULL, 64);
+						ARRAY_ADD(chain->commands, cmd, 16);
+						cmd = command_create();
 					}
 					break;
 			}
 		} else {
 			end = command_skip_any(start);
 			if (end-start > 0) {
-				ARRAY_ADD(cmd_tree->argv, hstrndup(start, end-start), 64);
+				ARRAY_ADD(cmd->argv, hstrndup(start, end-start), 64);
 			} else if (*end) {
 				end++;
 			}
 		}		
 		line = end;
 	}
-	ARRAY_ADD(cmd_tree->argv, NULL, 64);
-	ARRAY_ADD(command->tree, cmd_tree, 2);
-	ARRAY_ADD(command->tree, NULL, 1);
+	ARRAY_ADD(cmd->argv, NULL, 64);
+	ARRAY_ADD(chain->commands, cmd, 2);
+	ARRAY_ADD(chain->commands, NULL, 1);
 }

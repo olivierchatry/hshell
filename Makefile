@@ -16,6 +16,7 @@ SRCS=main.c \
 	alias_get.c \
 	alias_set.c \
 	alias_add.c \
+	alias_expand.c \
 	env_get_index.c \
 	env_get.c \
 	env_set.c \

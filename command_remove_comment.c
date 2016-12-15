@@ -1,7 +1,7 @@
 #include "hshell.h"
 
-void command_remove_comment(command_t *command) {
-	char* line = command->line;
+void command_remove_comment(command_chain_t *chain) {
+	char* line = chain->line;
 	while (*line) {
 		if (*line == '#') {
 			*line = 0;
