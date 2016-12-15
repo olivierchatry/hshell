@@ -43,8 +43,10 @@ int main(int argc, char** argv, char** envp) {
 	
 	while (shell.exit == 0) {
 		command_chain_t chain;
-
-		prompt_print(&shell);
+		
+		if (shell.is_tty) {
+			prompt_print(&shell);
+		}
 		command_init(&chain);	
 		if (command_get(&shell, &chain, 0) == ERR_GET_COMMAND_EOF) {
 			shell.exit = 1;

@@ -12,7 +12,7 @@ static int command_wait(shell_t *shell, int fd) {
 	FD_SET(fd, &rds);
 	FD_SET(shell->cancel_pipe[0], &rds);
 
-	if (select(shell->cancel_pipe[0] + 1, &rds, NULL, NULL, NULL) > 0) {
+	if (select(2, &rds, NULL, NULL, NULL) > 0) {
 		if (FD_ISSET(fd, &rds)) {
 			return 1;
 		}
@@ -39,18 +39,19 @@ int command_copy_reminder(shell_t *shell, char *read_buffer) {
 int command_get(shell_t *shell, command_chain_t *chain, int fd_from) {
 	int		inhib_next = 0;
 	int		count;
+	int 	have;
 	char	read_buffer[LINE_BUFFER_SIZE];
 	char	*temp_read_buffer;
 	char 	ate = 1;
 
-	command_copy_reminder(shell, read_buffer);
-	count = hstrlen(read_buffer);
+	have = command_copy_reminder(shell, read_buffer);
+	count = hstrlen(read_buffer) + 1;
 	while (ate) {
 		if (chain->line_size > COMMAND_GET_MAXIMUM_CMD_SIZE) {
 			return ERR_GET_COMMAND_TO_BIG;
 		}
-		if (count || command_wait(shell, fd_from)) {
-			if (!count) {
+		if (have || command_wait(shell, fd_from)) {
+			if (!have) {
 				count = read(fd_from, read_buffer, LINE_BUFFER_SIZE);
 			}
 			if (count == -1) {
@@ -65,7 +66,7 @@ int command_get(shell_t *shell, command_chain_t *chain, int fd_from) {
 				ate = *temp_read_buffer++;
 				if (!ate || ((ate == '\n') && !inhib_next)) {
 					if (count > 1) {
-						shell->command_reminder = hstrndup(temp_read_buffer, count - 1);
+						shell->command_reminder = hstrndup(temp_read_buffer, count);
 					}
 					ate = 0;
 				}

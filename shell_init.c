@@ -27,6 +27,7 @@ void shell_init(shell_t* shell, int argc, char** argv, char **envp) {
 	shell->paths_string = NULL;
 	shell->exit = 0;
 	shell->exit_code = 0;
+	shell->is_tty = isatty(0); 
 	/*while (index < argc) {
 		if (hstrcmp(argv[index], "--test") == 0) {
 			hprintf("test");
@@ -39,6 +40,6 @@ void shell_init(shell_t* shell, int argc, char** argv, char **envp) {
 	shell->state = SHELL_STATE_RUN;
 	env_hook(shell, "");
 	global_shell = shell;
-	// signal(SIGINT, signal_interrupt);
+	signal(SIGINT, signal_interrupt);
 	pipe(shell->cancel_pipe);
 }

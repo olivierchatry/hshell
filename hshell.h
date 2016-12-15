@@ -56,6 +56,7 @@ struct shell_s {
 	int							cancel_pipe[2];
 	int 						child_exit_code;
 	char  					*command_reminder;
+	int							is_tty;
 };
 
 typedef struct shell_s shell_t;

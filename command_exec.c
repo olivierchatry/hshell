@@ -5,8 +5,10 @@
 
 static void command_exec_child(shell_t *shell, command_chain_t *chain, command_t *cmd) {
 	char* exec_path = paths_expand(shell, cmd->argv[0]);
-	execve(exec_path, cmd->argv, shell->envp);
-	hprintf(exec_path);
+	if (exec_path) {
+		execve(exec_path, cmd->argv, shell->envp);
+	}
+	hprintf(exec_path ? exec_path : cmd->argv[0]);
 	hprintf(": command not found.\n");
 	free(exec_path);
 	shell_free(shell);
