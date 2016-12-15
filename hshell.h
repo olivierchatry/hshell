@@ -40,19 +40,20 @@ struct command_s {
 typedef struct command_s command_t;
 
 struct shell_s {
-	char	**ARRAY(env_keys);
-	char	**ARRAY(env_values);
-	char	**ARRAY(alias_keys);
-	char	**ARRAY(alias_values);
-	int		exit;
-	int		exit_code;
-	char	**ARRAY(paths);
-	char  *paths_string;
-	char	**ARRAY(envp);
-	int 	state;
-	int		cancel_pipe[2];
-	int 	child_exit_code;
-	char  *command_reminder;
+	char			**ARRAY(env_keys);
+	char			**ARRAY(env_values);
+	char			**ARRAY(alias_keys);
+	char			**ARRAY(alias_values);
+	command_t	**ARRAY(alias_commands);
+	int				exit;
+	int				exit_code;
+	char			**ARRAY(paths);
+	char  		*paths_string;
+	char			**ARRAY(envp);
+	int 			state;
+	int				cancel_pipe[2];
+	int 			child_exit_code;
+	char  		*command_reminder;
 };
 
 typedef struct shell_s shell_t;

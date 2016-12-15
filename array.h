@@ -22,6 +22,19 @@
 	int array##_size;\
 	int array##_buffer_size
 
+#define ARRAY_FREE_EACH(array) { \
+	int count;\
+	for (count = 0; count < array##_size; ++count) {\
+		if (array[count]) {\
+			free(array[count]);\
+		}\
+	}\
+	free(array);\
+	array=NULL;\
+	array##_size=0;\
+	array##_buffer_size=0;\
+}
+
 #define ARRAY_FREE(array) free(array);\
 	array=NULL;\
 	array##_size=0;\
