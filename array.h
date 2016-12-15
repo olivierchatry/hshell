@@ -61,4 +61,10 @@ if (array##_size > 0) { \
 	array##_buffer_size=0
 
 #define ARRAY_LAST(array) array[array##_size - 1]	
+
+#define ARRAY_SET(a, b) \
+a = b;\
+a##_size = b##_size;\
+a##_buffer_size = b##_buffer_size;
+
 #endif
