@@ -6,23 +6,28 @@ void alias_expand_r(shell_t* shell, command_t* parent) {
 	
 	for (index = 0; index < parent->commands_size - 1;) {
 		command_t				*command = parent->commands[index];
-		command_chain_t	*alias = alias_get(shell, command->argv[0]);
+		command_chain_t	*alias = NULL;
+		if (command->argv_size > 1) {
+			alias = alias_get(shell, command->argv[0]);
+		}
 		if (alias && command->alias != alias) {
 			command_t	**ARRAY(new);
 			int					copy;
 
 			ARRAY_INIT(new);
 			for (copy = 0; copy < index; ++copy) {
-				ARRAY_ADD(new, parent->commands[index], COMMAND_BUFFER_SIZE);
+				ARRAY_ADD(new, parent->commands[copy], COMMAND_BUFFER_SIZE);
 			}
 			
 			if (alias->root.commands_size > 1) {
 				command_t *replace;
 				int 			argv;
 				for (copy = 0; copy < alias->root.commands_size - 1; ++copy) {
-					ARRAY_ADD(new, command_clone(alias->root.commands[copy]), COMMAND_BUFFER_SIZE);
+					replace = command_clone(alias->root.commands[copy]);
+					ARRAY_ADD(new, replace, COMMAND_BUFFER_SIZE);
 				}
-				replace = new[copy - 1];
+				// last item on the alias get the replaced command op.
+				replace->op = command->op;
 				ARRAY_POP(replace->argv); // pop NULL
 				for (argv = 1; argv < command->argv_size - 1; ++argv) {
 					ARRAY_ADD(replace->argv, hstrdup(command->argv[argv]), ARGV_BUFFER_SIZE);
