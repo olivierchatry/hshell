@@ -9,13 +9,13 @@ static void command_exec_child(shell_t *shell, command_chain_t *chain, command_t
 	hprintf("command not found.\n");
 	free(exec_path);
 	shell_free(shell);
-	command_free(chain);
+	command_chain_free(chain);
 	_exit(EXIT_FAILURE);	
 }
 
 void command_exec(shell_t *shell, command_chain_t *chain) {
-	int status = 0;
-	command_t **commands = chain->commands;
+	int 			status = 0;
+	command_t **commands = chain->root.commands;
 	
 	while (*commands) {
 		command_t *cmd = *commands;

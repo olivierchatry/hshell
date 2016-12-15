@@ -72,14 +72,15 @@ static token_t *command_find_token(const char* str) {
 command_t	*command_create() {
 	command_t *cmd = malloc(sizeof(command_t));
 	ARRAY_INIT(cmd->argv);
-	ARRAY_INIT(cmd->children);
+	ARRAY_INIT(cmd->commands);
 	cmd->op = SHELL_OP_NONE;
+	cmd->alias = NULL;
 	return cmd;
 }
 
 void command_lexer(command_chain_t *chain) {
-	const char			*line = chain->line;
-	command_t	*cmd = command_create();
+	const char	*line = chain->line;
+	command_t		*cmd = command_create();
 	
 	while (*line) {
 		const char	*start = command_skip_space(line);
@@ -93,8 +94,8 @@ void command_lexer(command_chain_t *chain) {
 				case SHELL_OP_NONE:
 					if (cmd) {
 						cmd->op = token->id;
-						ARRAY_ADD(cmd->argv, NULL, 64);
-						ARRAY_ADD(chain->commands, cmd, 16);
+						ARRAY_ADD(cmd->argv, NULL, ARGV_BUFFER_SIZE);
+						ARRAY_ADD(chain->root.commands, cmd, COMMAND_BUFFER_SIZE);
 						cmd = command_create();
 					}
 					break;
@@ -102,7 +103,7 @@ void command_lexer(command_chain_t *chain) {
 		} else {
 			end = command_skip_any(start);
 			if (end-start > 0) {
-				ARRAY_ADD(cmd->argv, hstrndup(start, end-start), 64);
+				ARRAY_ADD(cmd->argv, hstrndup(start, end-start), ARGV_BUFFER_SIZE);
 			} else if (*end) {
 				end++;
 			}
@@ -110,6 +111,6 @@ void command_lexer(command_chain_t *chain) {
 		line = end;
 	}
 	ARRAY_ADD(cmd->argv, NULL, 64);
-	ARRAY_ADD(chain->commands, cmd, 2);
-	ARRAY_ADD(chain->commands, NULL, 1);
+	ARRAY_ADD(chain->root.commands, cmd, 2);
+	ARRAY_ADD(chain->root.commands, NULL, 1);
 }

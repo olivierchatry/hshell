@@ -13,7 +13,8 @@
 #define LINE_BUFFER_SIZE 4096
 #define PATH_BUFFER_SIZE 1024
 #define ENV_EXPAND_BUFFER_SIZE 1024
-
+#define ARGV_BUFFER_SIZE 64
+#define COMMAND_BUFFER_SIZE 16
 
 #define SHELL_STATE_NONE		0
 #define SHELL_STATE_INIT		1
@@ -23,18 +24,20 @@
 #define SHELL_OP_NONE				0
 #define SHELL_OP_AND				1
 #define SHELL_OP_OR					2
+#define SHELL_OP_ROOT				3
 
 struct command_s {
 	char 							**ARRAY(argv);
-	struct command_s	**ARRAY(children);
+	struct command_s	**ARRAY(commands);
 	int								op;
+	void							*alias;
 };
 
 typedef struct command_s command_t;
 
 struct command_chain_s {
 	char			*ARRAY(line);
-	command_t	**ARRAY(commands);
+	command_t	root;
 };
 
 typedef struct command_chain_s command_chain_t;
@@ -66,7 +69,7 @@ typedef struct shell_s shell_t;
 #define ERR_GET_COMMAND_EOF			4
 
 int		command_get(shell_t *shell, command_chain_t *command, int fd_from);
-void	command_free(command_chain_t *command);
+void	command_chain_free(command_chain_t *command);
 void	command_init(command_chain_t *command);
 void	command_split(command_chain_t *command);
 void	command_exec(shell_t *shell, command_chain_t *command);
@@ -75,6 +78,8 @@ void	command_lexer(command_chain_t *command);
 void	command_expand(shell_t *shell, command_chain_t *command);
 void	command_remove_comment(command_chain_t *command);
 void	command_remove_quote(command_chain_t* command);
+void	command_free(command_t* command);
+command_t *command_clone(command_t *command);
 
 void	shell_init(shell_t* shell, int argc, char** argv, char** envp);
 void	shell_free(shell_t* shell);

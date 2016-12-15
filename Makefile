@@ -9,6 +9,7 @@ SRCS=main.c \
 	command_expand.c \
 	command_remove_comment.c \
 	command_remove_quote.c \
+	command_clone.c \
 	shell_init.c \
 	shell_free.c \
 	shell_getcwd.c \
@@ -45,3 +46,11 @@ $(TARGET): $(OBJS)
 
 clean:
 	$(RM) *.o $(TARGET)
+
+depend: .depend
+
+.depend: $(SRCS)
+	$(RM) -f ./.depend
+	$(CC) $(CFLAGS) -MM $^ -MF  ./.depend;
+	
+include .depend

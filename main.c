@@ -58,7 +58,7 @@ int main(int argc, char** argv, char** envp) {
 				command_exec(&shell, &chain);
 			}
 		}
-		command_free(&chain);
+		command_chain_free(&chain);
 	}
 	shell_free(&shell);
 	return shell.exit_code;

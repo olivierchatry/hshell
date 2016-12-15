@@ -50,7 +50,12 @@
 		}\
 	}\
 }
-	
+
+#define ARRAY_POP(array) \
+if (array##_size > 0) { \
+	array##_size--; \
+}
+
 #define ARRAY_INIT(array) array=NULL;\
 	array##_size=0;\
 	array##_buffer_size=0

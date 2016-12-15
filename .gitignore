@@ -1,6 +1,8 @@
 # target
 shell
 vgcore.*
+.vscode
+.depend
 
 # Compiled source #
 ###################
