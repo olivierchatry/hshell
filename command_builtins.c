@@ -39,7 +39,7 @@ void builtin_env(shell_t *shell, command_t *cmd, int *status) {
 		}
 		envp++;
 	}
-	UNUSED(status)
+	UNUSED(status);
 }
 
 void builtin_setenv(shell_t *shell, command_t *cmd, int *status) {
@@ -51,12 +51,12 @@ void builtin_setenv(shell_t *shell, command_t *cmd, int *status) {
 	}
 }
 
-void builtin_exit(shell_t* shell, command_t* cmd, int *status) {
+void builtin_exit(shell_t *shell, command_t *cmd, int *status) {
 	shell->exit = 1;
 	if (cmd->argv_size > 2) {
 		shell->exit_code = hatoi(cmd->argv[1]);
 	}
-	UNUSED(status)
+	UNUSED(status);
 }
 
 void builtin_unsetenv(shell_t *shell, command_t *cmd, int *status) {
@@ -69,7 +69,7 @@ void builtin_unsetenv(shell_t *shell, command_t *cmd, int *status) {
 }
 
 void builtin_cd(shell_t *shell, command_t *cmd, int *status) {
-	const char* path = NULL;
+	const char *path = NULL;
 	if (cmd->argv_size > 2) {
 		path = cmd->argv[1]; 
 		if (hstrcmp(path, "-") == 0) {
@@ -88,6 +88,20 @@ void builtin_cd(shell_t *shell, command_t *cmd, int *status) {
 	shell_getcwd(shell);
 }
 
+void builtin_history(shell_t *shell, command_t *cmd, int *status) {
+	int index 	= (shell->history_write_index + 1) % shell->history_size;
+	int offset 	= 1;
+	while (index != shell->history_write_index) {
+		if (shell->history[index]) {
+			printf("%4d:  %s\n", offset, shell->history[index]);
+			offset++;
+		}
+		index = (index + 1) % shell->history_size;
+	}
+	UNUSED(status);
+	UNUSED(cmd);
+}
+
 static struct builtin_s s_builtins[] = {
 	{"exit", builtin_exit},
 	{"env", builtin_env},
@@ -95,6 +109,8 @@ static struct builtin_s s_builtins[] = {
 	{"unsetenv", builtin_unsetenv},
 	{"cd", builtin_cd},
 	{"alias", builtin_alias},
+	{"history", builtin_history},
+
 	{NULL, NULL}
 };
 

@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include "array.h"
 
-#define UNUSED(x) (void)x;
+#define UNUSED(x) (void)x
 
 
 #define COMMAND_GET_MAXIMUM_CMD_SIZE 4096*4096
@@ -47,6 +47,10 @@ struct shell_s {
 	char						**ARRAY(env_values);
 	char						**ARRAY(alias_keys);
 	command_chain_t	**ARRAY(alias_commands);
+	char						**history;
+	int							history_write_index;
+	int							history_size;
+
 	int							exit;
 	int							exit_code;
 	char						**ARRAY(paths);
@@ -69,33 +73,38 @@ typedef struct shell_s shell_t;
 #define ERR_GET_COMMAND_MEMORY	3
 #define ERR_GET_COMMAND_EOF			4
 
-int		command_get(shell_t *shell, command_chain_t *command, int fd_from);
-void	command_chain_free(command_chain_t *command);
-void	command_init(command_chain_t *command);
-void	command_split(command_chain_t *command);
-void	command_exec(shell_t *shell, command_chain_t *command);
-int		command_builtins(shell_t *shell, command_t *command, int *status);
-void	command_lexer(command_chain_t *command);
-void	command_expand(shell_t *shell, command_chain_t *command);
-void	command_remove_comment(command_chain_t *command);
-void	command_remove_quote(command_chain_t* command);
-void	command_free(command_t* command);
+int				command_get(shell_t *shell, command_chain_t *command, int fd_from);
+void			command_chain_free(command_chain_t *command);
+void			command_init(command_chain_t *command);
+void			command_split(command_chain_t *command);
+void			command_exec(shell_t *shell, command_chain_t *command);
+int				command_builtins(shell_t *shell, command_t *command, int *status);
+void			command_lexer(command_chain_t *command);
+void			command_expand(shell_t *shell, command_chain_t *command);
+void			command_remove_comment(command_chain_t *command);
+void			command_remove_quote(command_chain_t *command);
+void			command_free(command_t *command);
 command_t *command_clone(command_t *command);
 
-void	shell_init(shell_t* shell, int argc, char** argv, char** envp);
-void	shell_free(shell_t* shell);
-void 	shell_getcwd(shell_t* shell);
+void	history_init(shell_t *shell, int size);
+void 	history_add(shell_t *shell, const char *line);
+void 	history_free(shell_t *shell);
+void 	history_expand(shell_t *shell, command_chain_t* chain);
+
+void	shell_init(shell_t *shell, int argc, char **argv, char **envp);
+void	shell_free(shell_t *shell);
+void 	shell_getcwd(shell_t *shell);
 
 command_chain_t	*alias_get(shell_t *shell, const char *key);
 command_chain_t	*alias_set(shell_t *shell, char *alias, char *value);
-void 						alias_expand(shell_t* shell, command_chain_t* chain);
+void 						alias_expand(shell_t *shell, command_chain_t *chain);
 int							alias_get_index(shell_t *shell, const char *key);
-void						alias_add(shell_t *shell, char* env);
+void						alias_add(shell_t *shell, char *env);
 
-void	env_add(shell_t* shell, char* env);
-int		env_remove(shell_t *shell, const char* key);
+void	env_add(shell_t *shell, char *env);
+int		env_remove(shell_t *shell, const char *key);
 char	*env_get(shell_t *shell, const char *key);
-char* env_get_n(shell_t *shell, const char *key, int n);
+char	*env_get_n(shell_t *shell, const char *key, int n);
 int		env_get_index(shell_t *shell, const char *key);
 int		env_get_index_n(shell_t *shell, const char *key, int n);
 char	*env_set(shell_t *shell, const char *key, const char *value);
@@ -104,8 +113,8 @@ void	env_rebuild_envp(shell_t *shell);
 void	env_free_envp(shell_t *shell);
 char	*env_expand(shell_t *shell, const char *str);
 
-void	paths_parse(shell_t* shell);
-char	*paths_expand(shell_t *shell, const char* value);
+void	paths_parse(shell_t *shell);
+char	*paths_expand(shell_t *shell, const char *value);
 void	paths_free(shell_t *shell);
 
 #endif

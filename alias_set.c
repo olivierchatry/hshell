@@ -1,7 +1,7 @@
 #include "hshell.h"
 #include "hlib.h"
 
-void command_set_alias_r(command_t *command, void* alias) {
+void command_set_alias_r(command_t *command, void *alias) {
 	int index;
 	command->alias = alias;
 	for (index = 0; index < command->commands_size - 1; ++index) {
@@ -12,7 +12,7 @@ void command_set_alias_r(command_t *command, void* alias) {
 command_chain_t *alias_set(shell_t *shell, char *alias, char *value) {
 	int 	index = alias_get_index(shell, alias);
 
-	command_chain_t* chain = malloc(sizeof(command_chain_t));
+	command_chain_t *chain = malloc(sizeof(command_chain_t));
 	command_init(chain);
 	chain->line = hstrdup(value);
 	command_lexer(chain);

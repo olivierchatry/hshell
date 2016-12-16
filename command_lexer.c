@@ -3,7 +3,7 @@
 #include "hlib.h"
 
 struct token_s {
-	char* token;
+	char *token;
 	int  	len;
 	int		id;
 };
@@ -46,7 +46,7 @@ static const char *command_skip_space(const char *str) {
 	return str;
 }
 
-static const char *command_skip_any(const char* str) {
+static const char *command_skip_any(const char *str) {
 	char		*delims=" \t\n&|;";
 	char		inhib = 0;
 	char		quote = 0;
@@ -61,8 +61,8 @@ static const char *command_skip_any(const char* str) {
 	return str;
 }
 
-static token_t *command_find_token(const char* str) {
-	token_t* tokens = s_tokens;
+static token_t *command_find_token(const char *str) {
+	token_t	*tokens = s_tokens;
 	while (tokens->token && (strncmp(str, tokens->token, tokens->len) != 0) ) {
 		tokens++;
 	}

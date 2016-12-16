@@ -1,10 +1,10 @@
 #include "hshell.h"
 #include "hlib.h"
 
-void paths_parse(shell_t* shell) {
+void paths_parse(shell_t *shell) {
 	paths_free(shell);
 	
-	char* path = env_get(shell, "PATH");
+	char	*path = env_get(shell, "PATH");
 	if (path) {
 		shell->paths_string = hstrdup(path);
 		const char *delim = ":;";

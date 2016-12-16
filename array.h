@@ -4,7 +4,7 @@
 
 #define ARRAY_ADD(array, data, add_buffer_size) \
 	if ( (array##_size) >= (array##_buffer_size) ) {\
-		void* array_add_next;\
+		void *array_add_next;\
 		unsigned int 	i;\
 		array_add_next = malloc(array##_buffer_size + add_buffer_size * sizeof(array[0]));\
 		for (i = 0; i < array##_buffer_size * sizeof(array[0]); ++i) {\

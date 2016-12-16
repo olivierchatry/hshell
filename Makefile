@@ -29,7 +29,11 @@ SRCS=main.c \
 	env_expand.c \
 	paths_expand.c \
 	paths_parse.c \
-	paths_free.c
+	paths_free.c \
+	history_add.c \
+	history_init.c \
+	history_free.c \
+	history_expand.c
 
 OBJS=$(SRCS:.c=.o)
 TARGET=shell

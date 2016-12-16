@@ -2,7 +2,7 @@
 #include "hshell.h"
 #include "array.h"
 
-void shell_free(shell_t* shell) {
+void shell_free(shell_t  *shell) {
 	ARRAY_FREE_EACH(shell->env_keys);
 	ARRAY_FREE_EACH(shell->env_values);
 
@@ -18,4 +18,5 @@ void shell_free(shell_t* shell) {
 	if (shell->command_reminder) {
 		free(shell->command_reminder);
 	}
+	history_free(shell);
 }

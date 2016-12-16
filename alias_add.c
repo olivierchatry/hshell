@@ -1,7 +1,7 @@
 #include "hshell.h"
 #include "hlib.h"
 
-void	alias_add(shell_t *shell, char* env) {
+void	alias_add(shell_t *shell, char *env) {
 	const char *delim = "= ";
 	char *value;
 	char *key = hstrtok_r(env, delim, &value);

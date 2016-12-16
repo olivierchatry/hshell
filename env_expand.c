@@ -2,7 +2,7 @@
 #include "hshell.h"
 #include "hlib.h"
 
-static const char *env_skip_any(const char* str) {
+static const char *env_skip_any(const char *str) {
 	char		*delims=" \t\n&|;$\\/'\"";
 	char		inhib = 0;
 

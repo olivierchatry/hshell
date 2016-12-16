@@ -1,10 +1,10 @@
 #include "hshell.h"
 #include "hlib.h"
 
-static command_t **alias_expand_command(shell_t* shell, command_t* command, char* used) {
+static command_t **alias_expand_command(shell_t *shell, command_t *command, char *used) {
 	int 				found = 1;
 	int 				index;
-	command_t** ARRAY(expanded);
+	command_t		**ARRAY(expanded);
 	
 	ARRAY_INIT(expanded);
 	ARRAY_ADD(expanded, command, COMMAND_BUFFER_SIZE);
@@ -17,17 +17,17 @@ static command_t **alias_expand_command(shell_t* shell, command_t* command, char
 		found = 0;
 		for (index = 0; index < shell->alias_keys_size; ++index) {
 			if (used[index] == 0) {
-				command_t** ARRAY(processing);
-				int cmd_index;
+				command_t	**ARRAY(processing);
+				int 			cmd_index;
 				
 				ARRAY_INIT(processing);
 				for (cmd_index = 0; cmd_index < expanded_size; ++cmd_index) {
-					command_t* cmd = expanded[cmd_index]; 
+					command_t *cmd = expanded[cmd_index]; 
 					if (cmd->argv_size > 1) {
 						if (hstrcmp(cmd->argv[0], shell->alias_keys[index]) == 0) {
 							int cpy_index;
 							used[index] = found = 1;
-							command_chain_t* alias = shell->alias_commands[index];
+							command_chain_t *alias = shell->alias_commands[index];
 							for (cpy_index = 0; cpy_index < alias->root.commands_size - 1; ++cpy_index) {
 								ARRAY_ADD(processing, alias->root.commands[cpy_index], COMMAND_BUFFER_SIZE);						
 							}
@@ -45,7 +45,7 @@ static command_t **alias_expand_command(shell_t* shell, command_t* command, char
 	return expanded;
 }
 
-void alias_expand_r(shell_t* shell, command_t* parent, char* used) {
+void alias_expand_r(shell_t *shell, command_t *parent, char *used) {
 	int				index;
 	command_t	**ARRAY(new);
 
@@ -80,7 +80,7 @@ void alias_expand_r(shell_t* shell, command_t* parent, char* used) {
 	ARRAY_SET(parent->commands, new);
 }
 
-void alias_expand(shell_t* shell, command_chain_t* chain) {
+void alias_expand(shell_t *shell, command_chain_t *chain) {
 	if (shell->alias_keys_size) {
 		char	*used = malloc(shell->alias_keys_size);
 		alias_expand_r(shell, &(chain->root), used);

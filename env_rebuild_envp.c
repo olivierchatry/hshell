@@ -8,10 +8,10 @@ void env_rebuild_envp(shell_t *shell) {
 	env_free_envp(shell);
 	for (index = 0; index < shell->env_keys_size; ++index) {
 		int 	size = hstrlen(shell->env_keys[index]);
+		char	*env;
 		size += hstrlen(shell->env_values[index]);
 		size += 2;
-		char* env = malloc(size);
-		*env = 0;
+		env = hcalloc(size);		
 		hstrcpy(env, shell->env_keys[index]);
 		hstrcat(env, "=");
 		hstrcat(env, shell->env_values[index]);

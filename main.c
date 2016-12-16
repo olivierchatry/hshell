@@ -6,7 +6,7 @@
 #include "hlib.h"
 
 void prompt_print(shell_t *shell) {
-	const char* prompt = env_get(shell, "PS1");
+	const char	*prompt = env_get(shell, "PS1");
 	if (!prompt) {
 		prompt = getuid() == 0 ? "# " : "$ ";
 	} 
@@ -35,7 +35,7 @@ void prompt_print(shell_t *shell) {
 }
 
 
-int main(int argc, char** argv, char** envp) {
+int main(int argc, char **argv, char **envp) {
 	shell_t shell;
 
 	shell_init(&shell, argc, argv, envp);
@@ -52,6 +52,8 @@ int main(int argc, char** argv, char** envp) {
 			shell.exit = 1;
 		} else {
 			if (chain.line) {
+				history_expand(&shell, &chain);
+				history_add(&shell, chain.line);
 				command_remove_comment(&chain);
 				command_expand(&shell, &chain);
 				command_lexer(&chain);

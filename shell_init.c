@@ -4,14 +4,14 @@
 #include "hshell.h"
 #include "hlib.h"
 
-static shell_t* global_shell;
+static int			g_cancel_pipe_fd;
 
 void signal_interrupt() {
-	const char* cancel_string = "";
-	write(global_shell->cancel_pipe[1], cancel_string, 1);
+	const char	*cancel_string = "";
+	write(g_cancel_pipe_fd, cancel_string, 1);
 }
 
-void shell_init(shell_t* shell, int argc, char** argv, char **envp) {
+void shell_init(shell_t *shell, int argc, char **argv, char **envp) {
 	UNUSED(argc);
 	UNUSED(argv);
 	
@@ -28,6 +28,12 @@ void shell_init(shell_t* shell, int argc, char** argv, char **envp) {
 	shell->exit = 0;
 	shell->exit_code = 0;
 	shell->is_tty = isatty(0); 
+	shell->history = NULL;
+	shell->history_size = 0;
+	shell->history_write_index = 0;
+
+	history_init(shell, 4096);
+	
 	/*while (index < argc) {
 		if (hstrcmp(argv[index], "--test") == 0) {
 			hprintf("test");
@@ -38,8 +44,8 @@ void shell_init(shell_t* shell, int argc, char** argv, char **envp) {
 		env_add(shell, *envp++);
 	}
 	shell->state = SHELL_STATE_RUN;
-	env_hook(shell, "");
-	global_shell = shell;
+	env_hook(shell, "");	
+	g_cancel_pipe_fd = shell->cancel_pipe[1];
 	signal(SIGINT, signal_interrupt);
 	pipe(shell->cancel_pipe);
 }
