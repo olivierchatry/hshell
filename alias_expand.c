@@ -87,3 +87,28 @@ void alias_expand(shell_t *shell, command_chain_t *chain) {
 		free(used);
 	}
 } 
+
+
+#define IS_SPACE(car) ( (car == ' ') || (car == '\t'))
+#define IS_WORD_END(car) ((car == ' ') || (car == '\t') || (car == '\n') || (car == '&') || (car == '|') || (car == ';'))
+/*
+void alias_expand_string(shell_t *shell, command_chain_t* chain) {
+	char	*ARRAY(str);
+	int		done = 0;
+	char	*used = hcalloc(shell->alias_keys_size);
+	
+	ARRAY_INIT(str);
+	while (!done) {
+		char	*line = chain->line;
+		char	*start, *end;
+		for (start = line; *start && IS_SPACE(*start); ++start);
+		for (end = start; *end && !IS_WORD_END(*end); ++end);
+		int		index = alias_get_index_n(shell, start, end - start);
+		if (index != -1) {
+			char* replace = shell->alias_commands[index]->line;
+			while (*replace) {
+				ARRAY_ADD()
+			}
+		}
+	}
+}*/

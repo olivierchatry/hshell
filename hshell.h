@@ -107,6 +107,7 @@ command_chain_t	*alias_get(shell_t *shell, const char *key);
 command_chain_t	*alias_set(shell_t *shell, char *alias, char *value);
 void 						alias_expand(shell_t *shell, command_chain_t *chain);
 int							alias_get_index(shell_t *shell, const char *key);
+int							alias_get_index_n(shell_t *shell, const char *key, int n);
 void						alias_add(shell_t *shell, char *env);
 
 void	env_add(shell_t *shell, char *env);

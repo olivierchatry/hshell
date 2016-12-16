@@ -60,7 +60,7 @@ int command_get(shell_t *shell, command_chain_t *chain, int fd_from) {
 			if (count == -1) {
 				return ERR_GET_COMMAND_READ;
 			}
-			if (count == 0) {
+			if (count == 0 && chain->line_size == 0) {
 				return ERR_GET_COMMAND_EOF;
 			}
 			temp_read_buffer = read_buffer;
