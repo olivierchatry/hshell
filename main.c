@@ -48,12 +48,14 @@ int main(int argc, char **argv, char **envp) {
 			prompt_print(&shell);
 		}
 		command_init(&chain);	
-		if (command_get(&shell, &chain, 0) == ERR_GET_COMMAND_EOF) {
+		if (command_get(&shell, &chain, shell.fd) == ERR_GET_COMMAND_EOF) {
 			shell.exit = 1;
 		} else {
 			if (chain.line) {
-				history_expand(&shell, &chain);
-				history_add(&shell, chain.line);
+				if (!shell.is_tty) {
+					history_expand(&shell, &chain);
+					history_add(&shell, chain.line);
+				}
 				command_remove_comment(&chain);
 				command_expand(&shell, &chain);
 				command_lexer(&chain);

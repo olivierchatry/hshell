@@ -62,6 +62,7 @@ struct shell_s {
 	int 						child_exit_code;
 	char  					*command_reminder;
 	int							is_tty;
+	int							fd;
 };
 
 typedef struct shell_s shell_t;

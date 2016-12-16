@@ -1,6 +1,9 @@
+#include <fcntl.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <signal.h>
+
 #include "hshell.h"
 #include "hlib.h"
 
@@ -32,9 +35,18 @@ void shell_init(shell_t *shell, int argc, char **argv, char **envp) {
 	shell->history_size = 0;
 	shell->history_write_index = 0;
 	shell->history_count = 0;
-
+	shell->fd = 0;
 	history_init(shell, 4096);
 	
+	if (argc > 1) {
+		shell->is_tty = 0;
+		shell->fd = open(argv[1], O_RDONLY, 0); 
+		if (shell->fd <= 0) {
+			shell->exit = 1;
+			shell->exit_code = -1;
+		}
+	}
+
 	/*while (index < argc) {
 		if (hstrcmp(argv[index], "--test") == 0) {
 			hprintf("test");

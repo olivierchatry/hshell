@@ -6,13 +6,16 @@
 #include <errno.h>
 
 static int command_wait(shell_t *shell, int fd) {
-	fd_set rds;
-
+	fd_set 	rds;
+	int			nfds = fd;
+	
 	FD_ZERO(&rds);
 	FD_SET(fd, &rds);
 	FD_SET(shell->cancel_pipe[0], &rds);
-
-	if (select(2, &rds, NULL, NULL, NULL) > 0) {
+	if (shell->cancel_pipe[0] > nfds) {
+		nfds = shell->cancel_pipe[0];
+	}
+	if (select(nfds + 1, &rds, NULL, NULL, NULL) > 0) {
 		if (FD_ISSET(fd, &rds)) {
 			return 1;
 		}

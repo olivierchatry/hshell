@@ -18,5 +18,8 @@ void shell_free(shell_t  *shell) {
 	if (shell->command_reminder) {
 		free(shell->command_reminder);
 	}
+	if (shell->fd > 0) {
+		close(shell->fd);
+	}
 	history_free(shell);
 }
