@@ -76,10 +76,7 @@ void builtin_cd(shell_t *shell, command_t *cmd, int *status) {
 			path = env_get(shell, "OLDPWD");
 		}
 	} else {
-		struct passwd *pws = getpwuid(geteuid());
-		if (pws) {
-			path = pws->pw_dir;
-		}
+		path = util_get_home();
 	}
 	*status = -1;
 	if (path) {

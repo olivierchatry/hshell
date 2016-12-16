@@ -50,6 +50,7 @@ struct shell_s {
 	char						**history;
 	int							history_write_index;
 	int							history_size;
+	int							history_count;
 
 	int							exit;
 	int							exit_code;
@@ -90,10 +91,16 @@ void	history_init(shell_t *shell, int size);
 void 	history_add(shell_t *shell, const char *line);
 void 	history_free(shell_t *shell);
 void 	history_expand(shell_t *shell, command_chain_t* chain);
+void	history_load(shell_t *shell);
+void	history_save(shell_t *shell);
+char	*history_get_file();
 
 void	shell_init(shell_t *shell, int argc, char **argv, char **envp);
 void	shell_free(shell_t *shell);
-void 	shell_getcwd(shell_t *shell);
+void	shell_getcwd(shell_t *shell);
+
+const char			*util_get_home();
+char						*util_read_file(const char* path);
 
 command_chain_t	*alias_get(shell_t *shell, const char *key);
 command_chain_t	*alias_set(shell_t *shell, char *alias, char *value);

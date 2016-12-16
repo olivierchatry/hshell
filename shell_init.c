@@ -31,6 +31,7 @@ void shell_init(shell_t *shell, int argc, char **argv, char **envp) {
 	shell->history = NULL;
 	shell->history_size = 0;
 	shell->history_write_index = 0;
+	shell->history_count = 0;
 
 	history_init(shell, 4096);
 	

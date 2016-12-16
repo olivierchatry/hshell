@@ -40,7 +40,7 @@ int main(int argc, char **argv, char **envp) {
 
 	shell_init(&shell, argc, argv, envp);
 	shell_getcwd(&shell);
-	
+	history_load(&shell);
 	while (shell.exit == 0) {
 		command_chain_t chain;
 		
@@ -64,6 +64,7 @@ int main(int argc, char **argv, char **envp) {
 		}
 		command_chain_free(&chain);
 	}
+	history_save(&shell);
 	shell_free(&shell);
 	return shell.exit_code;
 }

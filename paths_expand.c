@@ -8,17 +8,17 @@
 #define TEMP_BUFFER_SIZE 	4096
 
 char	*paths_expand(shell_t *shell, const char	*value) {
-	struct stat stat;
+	struct stat	stat;
 	char				*temp = NULL;
 	int					temp_size = 0;
 	int					value_size;
-	int 				found = 0;
+	int					found = 0;
+	int					index;
 
 	if ((value[0] == '.') || (value[0] == '/')) {
 		return hstrdup(value);
 	}
 	value_size = hstrlen(value);
-	int index;
 	for (index = 0; (index < shell->paths_size) && !found; ++index) {
 		const char	*path = shell->paths[index];
 		if (path) {

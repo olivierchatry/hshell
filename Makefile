@@ -33,7 +33,12 @@ SRCS=main.c \
 	history_add.c \
 	history_init.c \
 	history_free.c \
-	history_expand.c
+	history_expand.c \
+	history_save.c \
+	history_load.c \
+	history_get_file.c \
+	util_get_home.c \
+	util_read_file.c
 
 OBJS=$(SRCS:.c=.o)
 TARGET=shell
