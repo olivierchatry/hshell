@@ -45,7 +45,7 @@ void history_expand(shell_t *shell, command_chain_t* chain) {
 		} else {
 			if ( (at == ' ' || at == '\t' || at == 0 || at == '\n') && start) {
 				char* hist = history_find(shell, start, line);
-				while (*hist) {
+				while (hist && *hist) {
 					ARRAY_ADD(new, *hist++, LINE_BUFFER_SIZE);
 				}				
 				start = NULL;
