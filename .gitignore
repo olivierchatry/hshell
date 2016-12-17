@@ -1,5 +1,6 @@
 # target
 shell
+simple_shell
 vgcore.*
 .vscode
 .depend
@@ -12,6 +13,7 @@ vgcore.*
 *.exe
 *.o
 *.so
+*.d
 
 # Packages #
 ############

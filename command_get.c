@@ -15,24 +15,23 @@ static int command_wait(int fd) {
 			return 1;
 		} 
 	}
-
 	return 0;
 }
 
 int command_copy_reminder(shell_t *shell, char *read_buffer) {
-	int have = shell->command_reminder != NULL;
-	int index = 0;
-	if (!have) {
+	if (shell->command_reminder == NULL) {
 		return 0;
+	} else {
+		int index = 0;
+		while (shell->command_reminder[index]) {
+			read_buffer[index] = shell->command_reminder[index];
+			index++;
+		}
+		free(shell->command_reminder);
+		shell->command_reminder = NULL;
+		read_buffer[index] = 0;
+		return index + 1;
 	}
-	while (shell->command_reminder[index]) {
-		read_buffer[index] = shell->command_reminder[index];
-		index++;
-	}
-	free(shell->command_reminder);
-	shell->command_reminder = NULL;
-	read_buffer[index] = 0;
-	return index + 1;
 }
 
 int command_get(shell_t *shell, command_chain_t *chain, int fd_from) {
@@ -49,14 +48,13 @@ int command_get(shell_t *shell, command_chain_t *chain, int fd_from) {
 		}
 		if (count || command_wait(fd_from)) {
 			int good = (count = count) || (count = read(fd_from, read_buffer, LINE_BUFFER_SIZE));
-			if (count == -1) {
+			if (good == -1) {
 				return ERR_GET_COMMAND_READ;
 			}
 			if (good == 0 && chain->line_size == 0) {
 				return ERR_GET_COMMAND_EOF;
 			}
 			temp_read_buffer = read_buffer;
-
 			for (;count && ate;--count) {
 				ate = *temp_read_buffer++;
 				if (!ate || ((ate == '\n') && !inhib_next)) {

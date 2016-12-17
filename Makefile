@@ -1,3 +1,6 @@
+BUILD_DIR = ./build
+TARGET=simple_shell
+
 SRCS=main.c \
 	hlib.c \
 	command_get.c \
@@ -40,8 +43,8 @@ SRCS=main.c \
 	util_get_home.c \
 	util_read_file.c
 
-OBJS=$(SRCS:.c=.o)
-TARGET=shell
+OBJS = $(SRCS:%.c=$(BUILD_DIR)/%.o)
+DEPS=$(OBJ:%.o=%.d)
 CFLAGS=-I. -g -O0 -Wall -Werror -Wextra -pedantic
 RM=rm -f
 
@@ -50,16 +53,11 @@ all: $(TARGET)
 $(TARGET): $(OBJS)
 	$(CC)  $(CFLAGS) $(INCLUDES) -o $(TARGET) $(OBJS) $(LFLAGS) $(LIBS)
 
-.c.o:
-	$(CC) $(CFLAGS) $(INCLUDES) -c $<  -o $@
+-include $(DEPS)
+
+$(BUILD_DIR)/%.o : %.c
+	mkdir -p $(@D)
+	$(CC) $(CFLAGS) -MMD -c $< -o $@
 
 clean:
-	$(RM) *.o $(TARGET)
-
-depend: .depend
-
-.depend: $(SRCS)
-	$(RM) -f ./.depend
-	$(CC) $(CFLAGS) -MM $^ -MF  ./.depend;
-	
-include .depend
+	$(RM) $(OBJS) $(DEPS) $(TARGET) vgcore*
