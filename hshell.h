@@ -43,6 +43,8 @@ struct command_chain_s {
 typedef struct command_chain_s command_chain_t;
 
 struct shell_s {
+	char						*ARRAY(line);
+
 	char						**ARRAY(env_keys);
 	char						**ARRAY(env_values);
 	char						**ARRAY(alias_keys);
@@ -59,7 +61,7 @@ struct shell_s {
 	char						**ARRAY(envp);
 	int 						state;
 	int 						child_exit_code;
-	char  					*command_reminder;
+
 	int							is_tty;
 	int							fd;
 };
@@ -80,7 +82,7 @@ void			command_init(command_chain_t *command);
 void			command_split(command_chain_t *command);
 void			command_exec(shell_t *shell, command_chain_t *command);
 int				command_builtins(shell_t *shell, command_t *command, int *status);
-void			command_lexer(command_chain_t *command);
+int				command_lexer(command_chain_t *command);
 void			command_expand(shell_t *shell, command_chain_t *command);
 void			command_remove_comment(command_chain_t *command);
 void			command_remove_quote(command_chain_t *command);

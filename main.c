@@ -45,23 +45,33 @@ int main(int argc, char **argv, char **envp) {
 		command_chain_t chain;
 		
 		if (shell.is_tty) {
-			prompt_print(&shell);
+			if (shell.line_size) {
+				hprintf(">");
+			} else {
+				prompt_print(&shell);
+			}
 		}
 		command_init(&chain);	
 		if (command_get(&shell, &chain, shell.fd) == ERR_GET_COMMAND_EOF) {
-			shell.exit = 1;
+			if (!shell.line_size) {
+				shell.exit = 1;
+			}
+			ARRAY_RESET(shell.line);
 		} else {
-			if (chain.line) {
+			if (shell.line) {
+				chain.line = hstrdup(shell.line);
 				if (shell.is_tty) {
 					history_expand(&shell, &chain);
 					history_add(&shell, chain.line);
 				}
 				command_remove_comment(&chain);
 				command_expand(&shell, &chain);
-				command_lexer(&chain);
-				alias_expand(&shell, &chain);
-				command_remove_quote(&chain);
-				command_exec(&shell, &chain);
+				if (command_lexer(&chain) == 1) {
+					alias_expand(&shell, &chain);
+					command_remove_quote(&chain);
+					command_exec(&shell, &chain);
+					ARRAY_RESET(shell.line);
+				}
 			}
 		}
 		command_chain_free(&chain);

@@ -18,60 +18,40 @@ static int command_wait(int fd) {
 	return 0;
 }
 
-int command_copy_reminder(shell_t *shell, char *read_buffer) {
-	if (shell->command_reminder == NULL) {
-		return 0;
-	} else {
-		int index = 0;
-		while (shell->command_reminder[index]) {
-			read_buffer[index] = shell->command_reminder[index];
-			index++;
-		}
-		free(shell->command_reminder);
-		shell->command_reminder = NULL;
-		read_buffer[index] = 0;
-		return index + 1;
-	}
-}
 
 int command_get(shell_t *shell, command_chain_t *chain, int fd_from) {
-	int		inhib_next = 0;
-	int		count;
 	char	read_buffer[LINE_BUFFER_SIZE];
 	char	*temp_read_buffer;
 	char 	ate = 1;
 
-	count = command_copy_reminder(shell, read_buffer);
 	while (ate) {
 		if (chain->line_size > COMMAND_GET_MAXIMUM_CMD_SIZE) {
 			return ERR_GET_COMMAND_TO_BIG;
 		}
-		if (count || command_wait(fd_from)) {
-			int good = (count = count) || (count = read(fd_from, read_buffer, LINE_BUFFER_SIZE));
-			if (good == -1) {
+		if (command_wait(fd_from)) {
+			int count = read(fd_from, read_buffer, LINE_BUFFER_SIZE);
+			if (count == -1) {
 				return ERR_GET_COMMAND_READ;
 			}
-			if (good == 0 && chain->line_size == 0) {
+			if (count == 0 && chain->line_size == 0) {
 				return ERR_GET_COMMAND_EOF;
 			}
 			temp_read_buffer = read_buffer;
-			for (;count && ate;--count) {
-				ate = *temp_read_buffer++;
-				if (!ate || ((ate == '\n') && !inhib_next)) {
-					shell->command_reminder = hstrndup(temp_read_buffer, count - 1);
-					ate = 0;
-				}
-				inhib_next = ate == '\\';
-				ARRAY_ADD(chain->line, ate, LINE_BUFFER_SIZE);
-				if (chain->line == NULL) {
+			while (count--) {
+				ARRAY_ADD(shell->line, *temp_read_buffer++, LINE_BUFFER_SIZE);
+				if (shell->line == NULL) {
 					return ERR_GET_COMMAND_MEMORY;
 				}
 			}
+			ate = ARRAY_LAST(shell->line) != '\n';
 		} else {
 			hprintf("\n");
 			ate = 0;
 			ARRAY_FREE(chain->line);
 		}
 	}
+	ARRAY_ADD(shell->line, 0, LINE_BUFFER_SIZE);
+	ARRAY_POP(shell->line);
+	UNUSED(shell);
 	return OK;
 }

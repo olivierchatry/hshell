@@ -90,25 +90,62 @@ void alias_expand(shell_t *shell, command_chain_t *chain) {
 
 
 #define IS_SPACE(car) ( (car == ' ') || (car == '\t'))
-#define IS_WORD_END(car) ((car == ' ') || (car == '\t') || (car == '\n') || (car == '&') || (car == '|') || (car == ';'))
+#define IS_WORD_END(car) ((car == 0) || (car == ' ') || (car == '\t') || (car == '&') || (car == '|') || (car == ';')  || (car == '\n'))
+#define IS_COMMAND_SPLIT(car) ( (car == 0) || (car == '&') || (car == '|') || (car == ';')  || (car == '\n'))
+
+char* alias_get_n(shell_t *shell, char *used, char *str, int count) {
+	char	*ret = NULL;
+	int 	index = alias_get_index_n(shell, str, count);
+	if (index >= 0 && !used[index]) {
+		ret = shell->alias_commands[index]->line;
+		used[index] = 1;
+	}
+	return ret;
+}
+
 /*
-void alias_expand_string(shell_t *shell, command_chain_t* chain) {
-	char	*ARRAY(str);
-	int		done = 0;
-	char	*used = hcalloc(shell->alias_keys_size);
+int		alias_expand_string(shell_t *shell, command_chain_t* chain, int offset, int size, char *used) {
+	char	*ARRAY(expanded);
+	char	*line = chain->line;
+	char	*start = NULL;
+	int		found = 0;
 	
-	ARRAY_INIT(str);
-	while (!done) {
-		char	*line = chain->line;
-		char	*start, *end;
-		for (start = line; *start && IS_SPACE(*start); ++start);
-		for (end = start; *end && !IS_WORD_END(*end); ++end);
-		int		index = alias_get_index_n(shell, start, end - start);
-		if (index != -1) {
-			char* replace = shell->alias_commands[index]->line;
-			while (*replace) {
-				ARRAY_ADD()
+	ARRAY_INIT(expanded);
+	while (offset) {
+		ARRAY_ADD(expanded, *line++, LINE_BUFFER_SIZE);
+		offset--;
+	}
+
+	while(size--) {
+		char	at = *line;
+		if (!IS_SPACE(at) && !found) {
+			start = line;
+		} else {
+			if (IS_COMMAND_SPLIT(at) && found) {
+				offset = expanded_size + 1;
+			}
+			if (IS_WORD_END(at) && start) {
+				char* alias = alias_get_n(shell, used, start, line - start);
+				while (alias && *alias) {
+					ARRAY_ADD(expanded, *alias++, LINE_BUFFER_SIZE);
+					found = 1;
+				}
+				start = NULL;
+			}
+			if (!start) {
+				ARRAY_ADD(expanded, at, LINE_BUFFER_SIZE);
 			}
 		}
+		line++;
 	}
-}*/
+}
+
+void	alias_expand_string(shell_t *shell, command_chain_t* chain) {
+	int		count = 0;
+	char	*used = hcalloc(shell->alias_keys_size);
+	int		offset = 0;
+
+	while ((count = chain->line_size - offset)) {	
+	}
+}
+*/

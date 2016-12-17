@@ -67,4 +67,11 @@ a = b;\
 a##_size = b##_size;\
 a##_buffer_size = b##_buffer_size;
 
+#define ARRAY_ALLOCATE(a, size) \
+a = malloc(size * sizeof(a[0])); \
+a##_size = 0;\
+a##_buffer_size = size;
+
+#define ARRAY_RESET(a) a##_size = 0
+
 #endif

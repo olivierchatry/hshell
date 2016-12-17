@@ -36,25 +36,25 @@ static 	token_t s_tokens[] = {
 	{"&&", 2, SHELL_OP_AND},
 	{"||", 2, SHELL_OP_OR},
 	{";",	 1, SHELL_OP_NONE},
+	{"\n",	 1, SHELL_OP_NONE},
 	{NULL, 0, SHELL_OP_NONE}
 };
 
 static const char *command_skip_space(const char *str) {
-	while (*str && (*str == ' ' || *str == '\t' || *str == '\n')) {
+	while (*str && (*str == ' ' || *str == '\t')) {
 		str++;
 	}
 	return str;
 }
 
-static const char *command_skip_any(const char *str) {
-	char		*delims=" \t\n&|;";
-	char		inhib = 0;
-	char		quote = 0;
+static const char *command_skip_any(const char *str, char *quote) {
+	char	*delims=" \t\n&|;";
+	char	inhib = 0;
 
-	while (*str && (inhib || quote || (hstrchr(delims, *str) == NULL))) {
+	while (*str && (inhib || *quote || (hstrchr(delims, *str) == NULL))) {
 		inhib = *str == '\\';
 		if (*str == '"') {
-			quote = !quote;
+			*quote = !*quote;
 		}
 		str++;
 	}
@@ -78,10 +78,11 @@ command_t	*command_create() {
 	return cmd;
 }
 
-void command_lexer(command_chain_t *chain) {
+int command_lexer(command_chain_t *chain) {
 	const char	*line = chain->line;
 	command_t		*cmd = command_create();
-	
+	char				quote = 0;
+
 	while (*line) {
 		const char	*start = command_skip_space(line);
 		token_t			*token = command_find_token(start);
@@ -101,7 +102,7 @@ void command_lexer(command_chain_t *chain) {
 					break;
 			}
 		} else {
-			end = command_skip_any(start);
+			end = command_skip_any(start, &quote);
 			if (end-start > 0) {
 				ARRAY_ADD(cmd->argv, hstrndup(start, end-start), ARGV_BUFFER_SIZE);
 			} else if (*end) {
@@ -113,4 +114,5 @@ void command_lexer(command_chain_t *chain) {
 	ARRAY_ADD(cmd->argv, NULL, 64);
 	ARRAY_ADD(chain->root.commands, cmd, 2);
 	ARRAY_ADD(chain->root.commands, NULL, 1);
+	return !quote;
 }

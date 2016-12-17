@@ -21,7 +21,9 @@ void shell_init(shell_t *shell, int argc, char **argv, char **envp) {
 	ARRAY_INIT(shell->alias_commands);
 	ARRAY_INIT(shell->paths);
 	ARRAY_INIT(shell->envp);
-	shell->command_reminder = NULL;
+	ARRAY_INIT(shell->line);
+	ARRAY_ALLOCATE(shell->line, LINE_BUFFER_SIZE);
+
 	shell->child_exit_code = 0;
 	shell->paths_string = NULL;
 	shell->exit = 0;
@@ -43,12 +45,6 @@ void shell_init(shell_t *shell, int argc, char **argv, char **envp) {
 		}
 	}
 
-	/*while (index < argc) {
-		if (hstrcmp(argv[index], "--test") == 0) {
-			hprintf("test");
-		}
-		index++;
-	}*/
 	while (*envp) {
 		env_add(shell, *envp++);
 	}
