@@ -52,7 +52,7 @@ int main(int argc, char **argv, char **envp) {
 			shell.exit = 1;
 		} else {
 			if (chain.line) {
-				if (!shell.is_tty) {
+				if (shell.is_tty) {
 					history_expand(&shell, &chain);
 					history_add(&shell, chain.line);
 				}

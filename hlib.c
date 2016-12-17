@@ -102,12 +102,15 @@ char *hstrdup(const char *str) {
 }
 
 char *hstrndup(const char *str, int n) {
-	char	*dup = hcalloc(n + 1);
-	char	*tmp = dup;
-	while (n-- && *str) {
-		*tmp++ = *str++;
+	char	*dup = NULL;
+	char	*tmp;
+	if (n > 0) {
+		tmp = dup = hcalloc(n + 1);
+		while (n-- && *str) {
+			*tmp++ = *str++;
+		}
+		*tmp++ = 0;
 	}
-	*tmp++ = 0;
 	return dup;
 }
 

@@ -27,40 +27,37 @@ static int command_wait(shell_t *shell, int fd) {
 int command_copy_reminder(shell_t *shell, char *read_buffer) {
 	int have = shell->command_reminder != NULL;
 	int index = 0;
-	if (have) {
-		while (shell->command_reminder[index]) {
-			read_buffer[index] = shell->command_reminder[index];
-			index++;
-		}
-		free(shell->command_reminder);
-		shell->command_reminder = NULL;
+	if (!have) {
+		return 0;
 	}
+	while (shell->command_reminder[index]) {
+		read_buffer[index] = shell->command_reminder[index];
+		index++;
+	}
+	free(shell->command_reminder);
+	shell->command_reminder = NULL;
 	read_buffer[index] = 0;
-	return have;
+	return index + 1;
 }
 
 int command_get(shell_t *shell, command_chain_t *chain, int fd_from) {
 	int		inhib_next = 0;
 	int		count;
-	int 	have;
 	char	read_buffer[LINE_BUFFER_SIZE];
 	char	*temp_read_buffer;
 	char 	ate = 1;
 
-	have = command_copy_reminder(shell, read_buffer);
-	count = hstrlen(read_buffer) + 1;
+	count = command_copy_reminder(shell, read_buffer);
 	while (ate) {
 		if (chain->line_size > COMMAND_GET_MAXIMUM_CMD_SIZE) {
 			return ERR_GET_COMMAND_TO_BIG;
 		}
-		if (have || command_wait(shell, fd_from)) {
-			if (!have) {
-				count = read(fd_from, read_buffer, LINE_BUFFER_SIZE);
-			}
+		if (count || command_wait(shell, fd_from)) {
+			int good = (count = count) || (count = read(fd_from, read_buffer, LINE_BUFFER_SIZE));
 			if (count == -1) {
 				return ERR_GET_COMMAND_READ;
 			}
-			if (count == 0 && chain->line_size == 0) {
+			if (good == 0 && chain->line_size == 0) {
 				return ERR_GET_COMMAND_EOF;
 			}
 			temp_read_buffer = read_buffer;
@@ -68,9 +65,7 @@ int command_get(shell_t *shell, command_chain_t *chain, int fd_from) {
 			while (count-- && ate) {
 				ate = *temp_read_buffer++;
 				if (!ate || ((ate == '\n') && !inhib_next)) {
-					if (count > 1) {
-						shell->command_reminder = hstrndup(temp_read_buffer, count);
-					}
+					shell->command_reminder = hstrndup(temp_read_buffer, count);
 					ate = 0;
 				}
 				inhib_next = ate == '\\';
