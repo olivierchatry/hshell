@@ -13,8 +13,6 @@ void shell_free(shell_t  *shell) {
 
 	paths_free(shell);
 	env_free_envp(shell);
-	close(shell->cancel_pipe[0]);
-	close(shell->cancel_pipe[1]);
 	if (shell->command_reminder) {
 		free(shell->command_reminder);
 	}

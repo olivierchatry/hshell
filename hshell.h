@@ -58,7 +58,6 @@ struct shell_s {
 	char  					*paths_string;
 	char						**ARRAY(envp);
 	int 						state;
-	int							cancel_pipe[2];
 	int 						child_exit_code;
 	char  					*command_reminder;
 	int							is_tty;

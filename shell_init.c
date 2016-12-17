@@ -7,11 +7,7 @@
 #include "hshell.h"
 #include "hlib.h"
 
-static int			g_cancel_pipe_fd;
-
 void signal_interrupt() {
-	const char	*cancel_string = "";
-	write(g_cancel_pipe_fd, cancel_string, 1);
 }
 
 void shell_init(shell_t *shell, int argc, char **argv, char **envp) {
@@ -58,7 +54,5 @@ void shell_init(shell_t *shell, int argc, char **argv, char **envp) {
 	}
 	shell->state = SHELL_STATE_RUN;
 	env_hook(shell, "");	
-	g_cancel_pipe_fd = shell->cancel_pipe[1];
 	signal(SIGINT, signal_interrupt);
-	pipe(shell->cancel_pipe);
 }
