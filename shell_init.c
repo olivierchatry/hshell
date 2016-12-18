@@ -22,6 +22,7 @@ void shell_init(shell_t *shell, int argc, char **argv, char **envp) {
 	ARRAY_INIT(shell->paths);
 	ARRAY_INIT(shell->envp);
 	ARRAY_INIT(shell->line);
+	ARRAY_INIT(shell->prompt);
 	ARRAY_ALLOCATE(shell->line, LINE_BUFFER_SIZE);
 
 	shell->child_exit_code = 0;

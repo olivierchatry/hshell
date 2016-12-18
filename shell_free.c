@@ -11,7 +11,8 @@ void shell_free(shell_t  *shell) {
 	ARRAY_EACH(shell->alias_commands, command_chain_free);
 	ARRAY_FREE_EACH(shell->alias_commands);
 	ARRAY_FREE(shell->line);
-
+	ARRAY_FREE(shell->prompt);
+	
 	paths_free(shell);
 	env_free_envp(shell);
 	if (shell->fd > 0) {

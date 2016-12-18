@@ -41,7 +41,11 @@ SRCS=main.c \
 	history_load.c \
 	history_get_file.c \
 	util_get_home.c \
-	util_read_file.c
+	util_read_file.c \
+	util_get_user.c \
+	util_get_hostname.c \
+	prompt_print.c \
+	prompt_expand.c 
 
 OBJS = $(SRCS:%.c=$(BUILD_DIR)/%.o)
 DEPS=$(OBJS:%.o=%.d)

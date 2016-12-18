@@ -116,6 +116,7 @@ char *hstrndup(const char *str, int n) {
 	return dup;
 }
 
+
 int hprintf(const char *format, ...) {
   va_list arg;
   int done;

@@ -16,7 +16,7 @@
 		array = array_add_next;\
 		array##_buffer_size += add_buffer_size;\
 	}\
-	array[array##_size++]=data
+	array[array##_size++]=(data)
 	
 #define ARRAY(array) array;\
 	int array##_size;\

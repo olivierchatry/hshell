@@ -11,6 +11,7 @@
 
 #define ENV_BUFFER_SIZE	1024
 #define LINE_BUFFER_SIZE 4096
+#define PROMPT_BUFFER_SIZE 1024
 #define PATH_BUFFER_SIZE 1024
 #define ENV_EXPAND_BUFFER_SIZE 1024
 #define ARGV_BUFFER_SIZE 64
@@ -44,6 +45,7 @@ typedef struct command_chain_s command_chain_t;
 
 struct shell_s {
 	char						*ARRAY(line);
+	char						*ARRAY(prompt);
 
 	char						**ARRAY(env_keys);
 	char						**ARRAY(env_values);
@@ -103,8 +105,13 @@ void	shell_init(shell_t *shell, int argc, char **argv, char **envp);
 void	shell_free(shell_t *shell);
 void	shell_getcwd(shell_t *shell);
 
+void	prompt_print(shell_t *shell);
+void	prompt_expand(shell_t* shell, const char* prompt);
+
 const char			*util_get_home();
 char						*util_read_file(const char* path);
+const char			*util_get_user();
+const char*			util_get_hostname();
 
 command_chain_t	*alias_get(shell_t *shell, const char *key);
 command_chain_t	*alias_set(shell_t *shell, char *alias, char *value);
