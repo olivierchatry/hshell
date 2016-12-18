@@ -8,8 +8,7 @@ static void command_exec_child(shell_t *shell, command_chain_t *chain, command_t
 	if (exec_path) {
 		execve(exec_path, cmd->argv, shell->envp);
 	}
-	hprintf(exec_path ? exec_path : cmd->argv[0]);
-	hprintf(": command not found.\n");
+	hprintf("%s: command not found.\n", exec_path ? exec_path : cmd->argv[0]);
 	free(exec_path);
 	shell_free(shell);
 	command_chain_free(chain);

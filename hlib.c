@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdarg.h>
+#include <stdio.h>
 
 int	hisnumber(const char *str, int n) {
 	int not;
@@ -114,12 +116,15 @@ char *hstrndup(const char *str, int n) {
 	return dup;
 }
 
-int hprintf(const char *str, ...) {
-	int count = 0;
-	while (*str) {
-		count += write(1, str++, 1);
-	}
-	return count;
+int hprintf(const char *format, ...) {
+  va_list arg;
+  int done;
+
+  va_start (arg, format);
+  done = vfprintf (stdout, format, arg);
+  va_end (arg);
+
+  return done;
 }
 
 const char *hstrchr(const char *str, int c) {

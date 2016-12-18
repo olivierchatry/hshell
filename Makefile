@@ -44,7 +44,7 @@ SRCS=main.c \
 	util_read_file.c
 
 OBJS = $(SRCS:%.c=$(BUILD_DIR)/%.o)
-DEPS=$(OBJ:%.o=%.d)
+DEPS=$(OBJS:%.o=%.d)
 CFLAGS=-I. -g -O0 -Wall -Werror -Wextra -pedantic
 RM=rm -f
 
@@ -59,5 +59,6 @@ $(BUILD_DIR)/%.o : %.c
 	mkdir -p $(@D)
 	$(CC) $(CFLAGS) -MMD -c $< -o $@
 
+.PHONY : clean
 clean:
 	$(RM) $(OBJS) $(DEPS) $(TARGET) vgcore*

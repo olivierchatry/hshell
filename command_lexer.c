@@ -52,10 +52,10 @@ static const char *command_skip_any(const char *str, char *quote) {
 	char	inhib = 0;
 
 	while (*str && (inhib || *quote || (hstrchr(delims, *str) == NULL))) {
-		inhib = *str == '\\';
-		if (*str == '"') {
-			*quote = !*quote;
+		if ( !inhib && ((*quote && (*str == *quote)) || (*str == '"' || *str == '\''))) {
+			*quote = *quote ? 0 : *str;
 		}
+		inhib = *str == '\\';
 		str++;
 	}
 	return str;
@@ -82,24 +82,26 @@ int command_lexer(command_chain_t *chain) {
 	const char	*line = chain->line;
 	command_t		*cmd = command_create();
 	char				quote = 0;
+	int					error = 0;
 
-	while (*line) {
+	while (*line && !error) {
 		const char	*start = command_skip_space(line);
 		token_t			*token = command_find_token(start);
-		const char	*end;
+		const char	*end = line;
 		if (token->token) {
-			end = start + token->len;
-			switch (token->id) {
-				case SHELL_OP_OR:
-				case SHELL_OP_AND:
-				case SHELL_OP_NONE:
-					if (cmd) {
-						cmd->op = token->id;
-						ARRAY_ADD(cmd->argv, NULL, ARGV_BUFFER_SIZE);
-						ARRAY_ADD(chain->root.commands, cmd, COMMAND_BUFFER_SIZE);
-						cmd = command_create();
-					}
-					break;
+			error = cmd->argv_size == 0;
+			if (!error) {
+				end = start + token->len;
+				switch (token->id) {
+					case SHELL_OP_OR:
+					case SHELL_OP_AND:
+					case SHELL_OP_NONE:
+							cmd->op = token->id;
+							ARRAY_ADD(cmd->argv, NULL, ARGV_BUFFER_SIZE);
+							ARRAY_ADD(chain->root.commands, cmd, COMMAND_BUFFER_SIZE);
+							cmd = command_create();
+						break;
+				}
 			}
 		} else {
 			end = command_skip_any(start, &quote);
@@ -111,7 +113,10 @@ int command_lexer(command_chain_t *chain) {
 		}		
 		line = end;
 	}
-	ARRAY_ADD(cmd->argv, NULL, 64);
+	if (error) {
+		hprintf("parsing error @ %s", line);
+	}
+	ARRAY_ADD(cmd->argv, NULL, ARGV_BUFFER_SIZE);
 	ARRAY_ADD(chain->root.commands, cmd, 2);
 	ARRAY_ADD(chain->root.commands, NULL, 1);
 	return !quote;

@@ -15,10 +15,7 @@ void builtin_alias(shell_t *shell, command_t *cmd, int *status) {
 	int index;
 	if (cmd->argv_size <= 2 || hstrcmp(cmd->argv[1], "-p") == 0) {
 		for (index = 0; index < shell->alias_keys_size; ++index) {
-			hprintf(shell->alias_keys[index]);
-			hprintf("=");
-			hprintf(shell->alias_commands[index]->line);
-			hprintf("\n");
+			hprintf("%s=%s\n", shell->alias_keys[index], shell->alias_commands[index]->line);
 		}
 	} else {
 		for (index = 1; index < cmd->argv_size - 1; ++index) {
@@ -34,8 +31,7 @@ void builtin_env(shell_t *shell, command_t *cmd, int *status) {
 	int		env_filter_len = env_filter ? hstrlen(env_filter) : 0;
 	while (*envp) {
 		if ( (env_filter_len == 0) || (hstrncmp(env_filter, *envp, env_filter_len) == 0)) {
-			hprintf(*envp);
-			hprintf("\n");
+			hprintf("%s\n", *envp);
 		}
 		envp++;
 	}
@@ -90,7 +86,7 @@ void builtin_history(shell_t *shell, command_t *cmd, int *status) {
 	int offset 	= 1;
 	while (index != shell->history_write_index) {
 		if (shell->history[index]) {
-			printf("%4d:  %s\n", offset, shell->history[index]);
+			hprintf("%4d:  %s\n", offset, shell->history[index]);
 			offset++;
 		}
 		index = (index + 1) % shell->history_size;

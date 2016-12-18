@@ -6,11 +6,17 @@
 #include "hlib.h"
 
 void prompt_print(shell_t *shell) {
-	const char	*prompt = env_get(shell, "PS1");
-	if (!prompt) {
-		prompt = getuid() == 0 ? "# " : "$ ";
-	} 
+	const char* prompt;
+	if (shell->line_size) {
+		prompt = ">";
+	} else {
+		prompt = env_get(shell, "PS1");
+		if (!prompt) {
+			prompt = getuid() == 0 ? "# " : "$ ";
+		} 
+	}
 	hprintf(prompt);
+	fflush(stdout);
 	/*else {
 		char	*ARRAY(expanded);
 		int		len = hstrlen(prompt);
@@ -52,10 +58,8 @@ int main(int argc, char **argv, char **envp) {
 			}
 		}
 		command_init(&chain);	
-		if (command_get(&shell, &chain, shell.fd) == ERR_GET_COMMAND_EOF) {
-			if (!shell.line_size) {
-				shell.exit = 1;
-			}
+		if (command_get(shell.fd, &shell) == ERR_GET_COMMAND_EOF) {
+			shell.exit = shell.line_size == 0;
 			ARRAY_RESET(shell.line);
 		} else {
 			if (shell.line) {

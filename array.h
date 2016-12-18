@@ -74,4 +74,11 @@ a##_buffer_size = size;
 
 #define ARRAY_RESET(a) a##_size = 0
 
+#define ARRAY_CAT(a, b, size, buffer_size) {\
+	int _array_cat_counter;\
+	for (_array_cat_counter = 0; _array_cat_counter < size; ++_array_cat_counter) {\
+		ARRAY_ADD(a, b[_array_cat_counter], buffer_size); \
+	}\
+}
+
 #endif

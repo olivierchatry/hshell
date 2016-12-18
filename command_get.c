@@ -5,6 +5,7 @@
 #include "hlib.h"
 #include <errno.h>
 
+// this is for handling signal interrupt. Select exit when it receive a signal.
 static int command_wait(int fd) {
 	fd_set 	rds;
 
@@ -18,40 +19,29 @@ static int command_wait(int fd) {
 	return 0;
 }
 
-
-int command_get(shell_t *shell, command_chain_t *chain, int fd_from) {
+int command_get(int fd, shell_t *shell) {
 	char	read_buffer[LINE_BUFFER_SIZE];
-	char	*temp_read_buffer;
-	char 	ate = 1;
+	char 	more = 1;
 
-	while (ate) {
-		if (chain->line_size > COMMAND_GET_MAXIMUM_CMD_SIZE) {
-			return ERR_GET_COMMAND_TO_BIG;
-		}
-		if (command_wait(fd_from)) {
-			int count = read(fd_from, read_buffer, LINE_BUFFER_SIZE);
-			if (count == -1) {
-				return ERR_GET_COMMAND_READ;
+	while (more) {
+		if ( (more = command_wait(fd)) ) {
+			int count = read(fd, read_buffer, LINE_BUFFER_SIZE);
+			if (count <= 0) {
+				return count;
 			}
-			if (count == 0 && chain->line_size == 0) {
-				return ERR_GET_COMMAND_EOF;
+			ARRAY_CAT(shell->line, read_buffer, count, LINE_BUFFER_SIZE);
+			if (shell->line == NULL) {
+				return ERR_GET_COMMAND_MEMORY;
 			}
-			temp_read_buffer = read_buffer;
-			while (count--) {
-				ARRAY_ADD(shell->line, *temp_read_buffer++, LINE_BUFFER_SIZE);
-				if (shell->line == NULL) {
-					return ERR_GET_COMMAND_MEMORY;
-				}
-			}
-			ate = ARRAY_LAST(shell->line) != '\n';
+			more = ARRAY_LAST(shell->line) != '\n';
 		} else {
 			hprintf("\n");
-			ate = 0;
-			ARRAY_FREE(chain->line);
+			ARRAY_RESET(shell->line);
 		}
 	}
+	// this will make sure we have a 0 at the end of the buffer, while
+	// it will not be taken into account (POP).
 	ARRAY_ADD(shell->line, 0, LINE_BUFFER_SIZE);
 	ARRAY_POP(shell->line);
-	UNUSED(shell);
 	return OK;
 }

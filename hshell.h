@@ -66,17 +66,19 @@ struct shell_s {
 	int							fd;
 };
 
+
 typedef struct shell_s shell_t;
 
 
-#define OK 0
+#define OK 1
 
-#define ERR_GET_COMMAND_TO_BIG	1
-#define ERR_GET_COMMAND_READ		2
-#define ERR_GET_COMMAND_MEMORY	3
-#define ERR_GET_COMMAND_EOF			4
+#define ERR_GET_COMMAND_EOF			0
+#define ERR_GET_COMMAND_READ		-1
+#define ERR_GET_COMMAND_TO_BIG	-2
+#define ERR_GET_COMMAND_MEMORY	-3
 
-int				command_get(shell_t *shell, command_chain_t *command, int fd_from);
+
+int 			command_get(int fd, shell_t *shell);
 void			command_chain_free(command_chain_t *command);
 void			command_init(command_chain_t *command);
 void			command_split(command_chain_t *command);
