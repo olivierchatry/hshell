@@ -1,6 +1,6 @@
 
-#include "hshell.h"
-#include "hlib.h"
+#include <hshell.h>
+#include "utils/hlib.h"
 
 int env_get_index_n(shell_t *shell, const char *key, int n) {
 	int index = 0;

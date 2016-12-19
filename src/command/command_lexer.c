@@ -1,6 +1,6 @@
 #include <string.h>
-#include "hshell.h"
-#include "hlib.h"
+#include <hshell.h>
+#include "utils/hlib.h"
 
 struct token_s {
 	char *token;

@@ -2,8 +2,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "hshell.h"
-#include "hlib.h"
+
+#include <hshell.h>
+#include "utils/hlib.h"
 
 
 static void	prompt_current_folder(shell_t *shell) {

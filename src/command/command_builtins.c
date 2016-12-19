@@ -2,8 +2,8 @@
 #include <sys/types.h>
 #include <pwd.h>
 
-#include "hshell.h"
-#include "hlib.h"
+#include <hshell.h>
+#include "utils/hlib.h"
 
 struct builtin_s {
 	char	*name;

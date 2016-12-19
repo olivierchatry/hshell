@@ -1,5 +1,5 @@
-#include "hshell.h"
-#include "hlib.h"
+#include <hshell.h>
+#include "utils/hlib.h"
 
 void paths_parse(shell_t *shell) {
 	paths_free(shell);

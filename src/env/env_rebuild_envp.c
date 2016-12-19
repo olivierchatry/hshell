@@ -1,5 +1,5 @@
-#include "hshell.h"
-#include "hlib.h"
+#include <hshell.h>
+#include "utils/hlib.h"
 
 
 void env_rebuild_envp(shell_t *shell) {

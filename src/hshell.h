@@ -2,7 +2,7 @@
 #define __HSHELL_H__
 
 #include <stdlib.h>
-#include "array.h"
+#include "utils/array.h"
 
 #define UNUSED(x) (void)x
 

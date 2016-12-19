@@ -1,5 +1,5 @@
-#include "hshell.h"
-#include "hlib.h"
+#include <hshell.h>
+#include "utils/hlib.h"
 
 char* history_find(shell_t *shell, char *beg, char *end) {
 	int		count 	= end - beg;

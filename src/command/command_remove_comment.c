@@ -1,4 +1,4 @@
-#include "hshell.h"
+#include <hshell.h>
 
 void command_remove_comment(command_chain_t *chain) {
 	char	*line = chain->line;

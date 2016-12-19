@@ -1,5 +1,5 @@
-#include "hshell.h"
-#include "hlib.h"
+#include <hshell.h>
+#include "utils/hlib.h"
 
 static command_t **alias_expand_command(shell_t *shell, command_t *command, char *used) {
 	int 				found = 1;

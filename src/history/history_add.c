@@ -1,5 +1,5 @@
-#include "hshell.h"
-#include "hlib.h"
+#include <hshell.h>
+#include "utils/hlib.h"
 
 void history_add(shell_t *shell, const char	*line) {
 	int		current_index	= ((shell->history_write_index - 1) + shell->history_size) % (shell->history_size);

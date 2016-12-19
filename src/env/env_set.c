@@ -1,5 +1,5 @@
-#include "hshell.h"
-#include "hlib.h"
+#include <hshell.h>
+#include "utils/hlib.h"
 
 char	*env_set(shell_t *shell, const char *key, const char *value) {
 	int		index = env_get_index(shell, key);

@@ -1,6 +1,5 @@
 #include <unistd.h>
-#include "hshell.h"
-#include "array.h"
+#include <hshell.h>
 
 void shell_free(shell_t  *shell) {
 	ARRAY_FREE_EACH(shell->env_keys);

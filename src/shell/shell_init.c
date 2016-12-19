@@ -4,8 +4,8 @@
 #include <sys/stat.h>
 #include <signal.h>
 
-#include "hshell.h"
-#include "hlib.h"
+#include <hshell.h>
+#include "utils/hlib.h"
 
 void signal_interrupt() {
 }

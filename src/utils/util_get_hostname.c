@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <unistd.h>
-#include "hlib.h"
+#include "utils/hlib.h"
 
 const char* util_get_hostname() {
 	static char hostname[1024];

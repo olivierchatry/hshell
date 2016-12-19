@@ -1,4 +1,4 @@
-#include "hshell.h"
+#include <hshell.h>
 
 void command_expand(shell_t *shell, command_chain_t *chain) {
 	char *expanded;

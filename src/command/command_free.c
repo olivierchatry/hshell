@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "hshell.h"
+#include <hshell.h>
 
 void command_free(command_t *command) {
 	ARRAY_FREE_EACH(command->argv);

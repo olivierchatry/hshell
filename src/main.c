@@ -1,5 +1,5 @@
-#include "hshell.h"
-#include "hlib.h"
+#include <hshell.h>
+#include "utils/hlib.h"
 
 int main(int argc, char **argv, char **envp) {
 	shell_t shell;

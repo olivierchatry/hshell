@@ -1,6 +1,5 @@
-#include "hshell.h"
-#include "array.h"
-#include "hlib.h"
+#include <hshell.h>
+#include "utils/hlib.h"
 
 void paths_free(shell_t *shell) {
 	ARRAY_FREE_EACH(shell->paths);

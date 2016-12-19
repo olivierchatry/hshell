@@ -1,5 +1,5 @@
-#include "hshell.h"
-#include "hlib.h"
+#include <hshell.h>
+#include "utils/hlib.h"
 
 void history_init(shell_t *shell, int size) {	
 	char  **history = hcalloc(sizeof(char*) * size);

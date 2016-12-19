@@ -1,4 +1,4 @@
-#include "hshell.h"
+#include <hshell.h>
 
 void history_free(shell_t *shell) {
 	int index;

@@ -1,5 +1,5 @@
-#include "hshell.h"
-#include "hlib.h"
+#include <hshell.h>
+#include "utils/hlib.h"
 
 #define ISQUOTE(c) ( (c == '"') || (c == '\''))
 

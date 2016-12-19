@@ -1,6 +1,6 @@
 #include <unistd.h>
-#include "hshell.h"
-#include "hlib.h"
+#include <hshell.h>
+#include "utils/hlib.h"
 
 static const char *env_skip_any(const char *str) {
 	char		*delims=" \t\n&|;$\\/'\"";

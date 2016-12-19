@@ -1,7 +1,7 @@
 #include <unistd.h>
 
-#include "hshell.h"
-#include "hlib.h"
+#include <hshell.h>
+#include "utils/hlib.h"
 
 void shell_getcwd(shell_t *shell) {
 	int 	buffer_size = 1024;

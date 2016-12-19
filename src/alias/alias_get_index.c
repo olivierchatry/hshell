@@ -1,5 +1,5 @@
-#include "hshell.h"
-#include "hlib.h"
+#include <hshell.h>
+#include "utils/hlib.h"
 
 int alias_get_index(shell_t *shell, const char *key) {
 	int index = 0;

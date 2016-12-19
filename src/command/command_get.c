@@ -1,8 +1,8 @@
 #include <sys/select.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include "hshell.h"
-#include "hlib.h"
+#include <hshell.h>
+#include "utils/hlib.h"
 #include <errno.h>
 
 // this is for handling signal interrupt. Select exit when it receive a signal.

@@ -1,6 +1,6 @@
 
-#include "hshell.h"
-#include "hlib.h"
+#include <hshell.h>
+#include "utils/hlib.h"
 
 void	history_load(shell_t *shell) {
 	char				*path;

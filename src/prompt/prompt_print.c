@@ -1,6 +1,6 @@
 #include "stdlib.h"
-#include "hshell.h"
-#include "hlib.h"
+#include <hshell.h>
+#include "utils/hlib.h"
 
 void	prompt_print(shell_t *shell) {
 	const char* prompt;
