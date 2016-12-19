@@ -69,7 +69,7 @@ void alias_expand_r(shell_t *shell, command_t *parent, char *used) {
 			ARRAY_POP(replace->argv); // pop NULL
 			for (argv = 1; argv < command->argv_size - 1; ++argv) {
 				ARRAY_ADD(replace->argv, hstrdup(command->argv[argv]), ARGV_BUFFER_SIZE);
-			}			
+			}
 			ARRAY_ADD(replace->argv, NULL, ARGV_BUFFER_SIZE);
 			command_free(command);
 			free(command);
