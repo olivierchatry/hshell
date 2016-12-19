@@ -132,8 +132,8 @@ void	env_rebuild_envp(shell_t *shell);
 void	env_free_envp(shell_t *shell);
 char	*env_expand(shell_t *shell, const char *str);
 
-void	paths_parse(shell_t *shell);
-char	*paths_expand(shell_t *shell, const char *value);
-void	paths_free(shell_t *shell);
+void	path_parse(shell_t *shell);
+char	*path_expand(shell_t *shell, const char *value);
+void	path_free(shell_t *shell);
 
 #endif

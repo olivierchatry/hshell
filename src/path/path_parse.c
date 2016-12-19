@@ -1,8 +1,8 @@
 #include <hshell.h>
 #include "utils/hlib.h"
 
-void paths_parse(shell_t *shell) {
-	paths_free(shell);
+void path_parse(shell_t *shell) {
+	path_free(shell);
 	
 	char	*path = env_get(shell, "PATH");
 	if (path) {

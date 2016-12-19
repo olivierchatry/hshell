@@ -7,7 +7,7 @@ struct hook_s {
 };
 
 static struct hook_s s_hooks[] = {
-	{"PATH", paths_parse},
+	{"PATH", path_parse},
 	{NULL, env_rebuild_envp},
 	{NULL, NULL}
 };

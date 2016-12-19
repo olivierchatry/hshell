@@ -7,7 +7,7 @@
 
 #define TEMP_BUFFER_SIZE 	4096
 
-char	*paths_expand(shell_t *shell, const char	*value) {
+char	*path_expand(shell_t *shell, const char	*value) {
 	struct stat	stat;
 	char				*temp = NULL;
 	int					temp_size = 0;

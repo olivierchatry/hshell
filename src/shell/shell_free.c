@@ -12,7 +12,7 @@ void shell_free(shell_t  *shell) {
 	ARRAY_FREE(shell->line);
 	ARRAY_FREE(shell->prompt);
 	
-	paths_free(shell);
+	path_free(shell);
 	env_free_envp(shell);
 	if (shell->fd > 0) {
 		close(shell->fd);

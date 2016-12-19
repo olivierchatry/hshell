@@ -4,7 +4,7 @@
 #include <sys/wait.h>
 
 static void command_exec_child(shell_t *shell, command_chain_t *chain, command_t *cmd) {
-	char *exec_path = paths_expand(shell, cmd->argv[0]);
+	char *exec_path = path_expand(shell, cmd->argv[0]);
 	if (exec_path) {
 		execve(exec_path, cmd->argv, shell->envp);
 	}

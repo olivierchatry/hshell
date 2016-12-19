@@ -7,7 +7,7 @@
 #include "utils/hlib.h"
 
 void history_save(shell_t *shell) {
-	char				*path;
+	char	*path;
 	
 	if (shell->history_count > 0) {
 		path = history_get_file();
