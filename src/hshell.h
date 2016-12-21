@@ -79,6 +79,7 @@ typedef struct shell_s shell_t;
 #define ERR_GET_COMMAND_TO_BIG	-2
 #define ERR_GET_COMMAND_MEMORY	-3
 
+#define TOKEN_SPACE " \t\a\v\r\f"
 
 int 			command_get(int fd, shell_t *shell);
 void			command_chain_free(command_chain_t *command);

@@ -48,7 +48,7 @@ static const char *command_skip_space(const char *str) {
 }
 
 static const char *command_skip_any(const char *str, char *quote) {
-	char	*delims=" \t\n&|;";
+	char	*delims= TOKEN_SPACE " \n&|;";
 	char	inhib = 0;
 
 	while (*str && (inhib || *quote || (hstrchr(delims, *str) == NULL))) {
@@ -89,19 +89,16 @@ int command_lexer(command_chain_t *chain) {
 		token_t			*token = command_find_token(start);
 		const char	*end = line;
 		if (token->token) {
-			error = cmd->argv_size == 0;
-			if (!error) {
-				end = start + token->len;
-				switch (token->id) {
-					case SHELL_OP_OR:
-					case SHELL_OP_AND:
-					case SHELL_OP_NONE:
-							cmd->op = token->id;
-							ARRAY_ADD(cmd->argv, NULL, ARGV_BUFFER_SIZE);
-							ARRAY_ADD(chain->root.commands, cmd, COMMAND_BUFFER_SIZE);
-							cmd = command_create();
-						break;
-				}
+			end = start + token->len;
+			switch (token->id) {
+				case SHELL_OP_OR:
+				case SHELL_OP_AND:
+				case SHELL_OP_NONE:
+						cmd->op = token->id;
+						ARRAY_ADD(cmd->argv, NULL, ARGV_BUFFER_SIZE);
+						ARRAY_ADD(chain->root.commands, cmd, COMMAND_BUFFER_SIZE);
+						cmd = command_create();
+					break;
 			}
 		} else {
 			end = command_skip_any(start, &quote);

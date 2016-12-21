@@ -2,11 +2,28 @@
 
 void command_remove_comment(command_chain_t *chain) {
 	char	*line = chain->line;
-	while (*line) {
-		if (*line == '#') {
-			*line = 0;
-		} else {
-			line++;
+	int		in = 0;
+	int		inhib = 0;
+	for (;*line; ++line) {
+		char at = *line;
+		switch (at) {
+			case '#': 
+				in = inhib == 0;
+				break;
+			case '"': 
+			case '\'':
+				if (!inhib && inhib == at) {
+					inhib = 0;
+				} else {
+					inhib = at;
+				}
+				break;
+			case '\n':
+				in = 0;
+				break;
+		}
+		if (in) {
+			*line = ' ';
 		}
 	}
 }

@@ -3,7 +3,7 @@
 #include "utils/hlib.h"
 
 static const char *env_skip_any(const char *str) {
-	char		*delims=" \t\n&|;$\\/'\"";
+	char		*delims=" \t\n&|;$\\/'\":";
 	char		inhib = 0;
 
 	while (*str && (inhib || (hstrchr(delims, *str) == NULL))) {

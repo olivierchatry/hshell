@@ -1,14 +1,9 @@
 #!/bin/bash
 
-command="ls
-ls
-ls
-/bin/ls
-ls
-ls
-ls
-/bin/ls
-ls
-ls"
+command="echo Kappa # echo Kappa
+####### echo Kappa
+# echo Kappa
+echo Kappa
+"
 
 echo "$command" | ./simple_shell
