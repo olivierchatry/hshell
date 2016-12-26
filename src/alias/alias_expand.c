@@ -87,13 +87,3 @@ void alias_expand(shell_t *shell, command_chain_t *chain) {
 		free(used);
 	}
 } 
-
-char* alias_get_n(shell_t *shell, char *used, char *str, int count) {
-	char	*ret = NULL;
-	int 	index = alias_get_index_n(shell, str, count);
-	if (index >= 0 && !used[index]) {
-		ret = shell->alias_commands[index]->line;
-		used[index] = 1;
-	}
-	return ret;
-}

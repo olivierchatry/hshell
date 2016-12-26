@@ -12,8 +12,10 @@ void command_remove_comment(command_chain_t *chain) {
 				break;
 			case '"': 
 			case '\'':
-				if (!inhib && inhib == at) {
-					inhib = 0;
+				if (!inhib) {
+					if ((inhib == at)) {
+						inhib = 0;
+					}
 				} else {
 					inhib = at;
 				}
