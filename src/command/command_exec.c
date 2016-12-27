@@ -16,12 +16,14 @@ static void command_exec_child(shell_t *shell, command_chain_t *chain, command_t
 }
 
 void command_exec(shell_t *shell, command_chain_t *chain) {
-	int 			status = 0;
-	command_t **commands = chain->root.commands;
+	int	status = 0;
+	int	index = 0;
 	
-	while (*commands) {
-		command_t *cmd = *commands;
-		if (cmd->argv_size > 1) {
+	while (chain->root.commands[index]) {
+		command_t *cmd;
+		alias_expand(shell, chain);	
+		cmd = chain->root.commands[index];
+		if (cmd && (cmd->argv_size > 1)) {
 			if (!command_builtins(shell, cmd, &status)) {
 				int pid = fork();
 				if (pid) {
@@ -33,11 +35,11 @@ void command_exec(shell_t *shell, command_chain_t *chain) {
 			}
 			
 			if ( ((status == 0) && (cmd->op == SHELL_OP_OR)) || ((status != 0) && (cmd->op == SHELL_OP_AND))) {
-				while (*commands && (*commands)->op == cmd->op) {
-					commands++;
+				while (chain->root.commands[index] && chain->root.commands[index]->op == cmd->op) {
+					index++;
 				}
 			}
 		}
-		commands++;			
+		index += cmd != NULL;			
 	}
 }

@@ -1,9 +1,7 @@
 #!/bin/bash
 
-command="echo Kappa # echo Kappa
-####### echo Kappa
-# echo Kappa
-echo Kappa
-"
+command="alias b=echo
+alias a=b
+a Hello Guillaume"
 
-echo "$command" | ./simple_shell
+echo "$command" | ./simple_shell > test

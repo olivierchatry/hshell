@@ -25,7 +25,6 @@ int main(int argc, char **argv, char **envp) {
 				command_remove_comment(&chain);
 				command_expand(&shell, &chain);
 				if (command_lexer(&chain) == 1) {
-					alias_expand(&shell, &chain);
 					command_remove_quote(&chain);
 					command_exec(&shell, &chain);
 					ARRAY_RESET(shell.line);
