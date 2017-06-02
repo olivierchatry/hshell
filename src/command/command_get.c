@@ -5,7 +5,7 @@
 #include "utils/hlib.h"
 #include <errno.h>
 
-// this is for handling signal interrupt. Select exit when it receive a signal.
+/* this is for handling signal interrupt. Select exit when it receive a signal. */
 static int command_wait(int fd) {
 	fd_set 	rds;
 
@@ -39,8 +39,8 @@ int command_get(int fd, shell_t *shell) {
 			ARRAY_RESET(shell->line);
 		}
 	}
-	// this will make sure we have a 0 at the end of the buffer, while
-	// it will not be taken into account (POP).
+	/* this will make sure we have a 0 at the end of the buffer, while */
+	/* it will not be taken into account (POP). */
 	ARRAY_ADD(shell->line, 0, LINE_BUFFER_SIZE);
 	ARRAY_POP(shell->line);
 	return OK;
