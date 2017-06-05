@@ -33,6 +33,9 @@ void command_exec(shell_t *shell, command_chain_t *chain) {
 				} else {
 					command_exec_child(shell, chain, cmd);
 				}
+			} else {
+				shell->child_exit_code = status;
+				shell->exit_code = status;
 			}
 			
 			if ( ((status == 0) && (cmd->op == SHELL_OP_OR)) || ((status != 0) && (cmd->op == SHELL_OP_AND))) {
