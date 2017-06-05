@@ -72,7 +72,7 @@ void builtin_cd(shell_t *shell, command_t *cmd, int *status) {
 			path = env_get(shell, "OLDPWD");
 		}
 	} else {
-		path = util_get_home();
+		path = env_get(shell, "HOME");
 	}
 	*status = -1;
 	if (path) {
