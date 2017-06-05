@@ -1,8 +1,9 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <pwd.h>
+#include <errno.h>
 
-#include <hshell.h>
+#include "hshell.h"
 #include "utils/hlib.h"
 
 struct builtin_s {
@@ -10,6 +11,10 @@ struct builtin_s {
 	void	(*fct)(shell_t *shell, command_t *command, int *status);
 };
 
+struct err_handler_s {
+	int code;
+	const char *str;
+};
 
 void builtin_alias(shell_t *shell, command_t *cmd, int *status) {
 	int index;
@@ -66,6 +71,14 @@ void builtin_unsetenv(shell_t *shell, command_t *cmd, int *status) {
 
 void builtin_cd(shell_t *shell, command_t *cmd, int *status) {
 	const char *path = NULL;
+	const struct err_handler_s errors[] = {
+		{EACCES, "Permission denied"},
+		{ELOOP, "Too many symbolic links"},
+		{ENOENT, "No such directory"},
+		{ENOTDIR, "Not a directory"},
+		{0, NULL}
+	};
+
 	if (cmd->argv_size > 2) {
 		path = cmd->argv[1]; 
 		if (hstrcmp(path, "-") == 0) {
@@ -76,9 +89,25 @@ void builtin_cd(shell_t *shell, command_t *cmd, int *status) {
 	}
 	*status = -1;
 	if (path) {
-		char    *current = env_get(shell, "PWD");
 		*status = chdir(path) * -2;
-		env_set(shell, "OLDPWD", current);
+		if (*status == 0) {
+			char    *current = env_get(shell, "PWD");
+			env_set(shell, "OLDPWD", current);
+		} else {
+			int i;
+			char resolved = 0;
+			for (i = 0; errors[i].str != NULL; i++) {
+				if (errno == errors[i].code) {
+					hprint_error("cd", "%s\n", errors[i].str);
+					resolved = 1;
+					break;
+				}
+			}
+			if (!resolved) {
+				/* chdir: Default failure message */
+				hprint_error("cd", "cannot cd to %s\n", path);
+			}
+		}
 	}
 	shell_getcwd(shell);
 }
