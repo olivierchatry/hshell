@@ -77,7 +77,7 @@ void builtin_cd(shell_t *shell, command_t *cmd, int *status) {
 	*status = -1;
 	if (path) {
 		char    *current = env_get(shell, "PWD");
-		*status = chdir(path);
+		*status = chdir(path) * -2;
 		env_set(shell, "OLDPWD", current);
 	}
 	shell_getcwd(shell);
