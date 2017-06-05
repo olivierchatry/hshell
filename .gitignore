@@ -3,6 +3,8 @@ simple_shell
 vgcore.*
 .vscode
 .depend
+build
+test
 
 # Compiled source #
 ###################
