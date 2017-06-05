@@ -12,7 +12,7 @@ static void command_exec_child(shell_t *shell, command_chain_t *chain, command_t
 	free(exec_path);
 	shell_free(shell);
 	command_chain_free(chain);
-	_exit(EXIT_FAILURE);	
+	_exit(127);	
 }
 
 void command_exec(shell_t *shell, command_chain_t *chain) {
