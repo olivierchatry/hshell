@@ -2,14 +2,16 @@
 #include "utils/hlib.h"
 
 void path_parse(shell_t *shell) {
+	char	*path;
+
 	path_free(shell);
-	
-	char	*path = env_get(shell, "PATH");
+	path = env_get(shell, "PATH");
 	if (path) {
-		shell->paths_string = hstrdup(path);
 		const char *delim = ":;";
 		char *token;
 		char *saveptr;
+
+		shell->paths_string = hstrdup(path);
 		if (hstrchr(delim, *shell->paths_string)) {
 			ARRAY_ADD(shell->paths, hstrdup("."), PATH_BUFFER_SIZE);			
 		}

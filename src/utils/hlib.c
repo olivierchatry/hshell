@@ -2,6 +2,22 @@
 #include <unistd.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdarg.h>
+#include <stdio.h>
+
+int hprint_error(const char *command, const char *msg, ...) {
+	const char *shell_name = "hshell";
+	va_list args;
+	int ret;
+
+	va_start(args, msg);
+	ret = printf("%s: %s: ", shell_name, command);
+	ret += vprintf(msg, args);
+	fflush(stdout);
+	va_end(args);
+
+	return ret;
+}
 
 int	hisnumber(const char *str, int n) {
 	int not;

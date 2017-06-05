@@ -14,8 +14,8 @@ static const char *env_skip_any(const char *str) {
 
 char	*env_expand(shell_t *shell, const char *str) {
 	char	*ARRAY(expanded);
-	ARRAY_INIT(expanded);
 	int inhib = 0;
+	ARRAY_INIT(expanded);
 	while (*str) {
 		int found = 0;
 		if (!inhib && *str == '$') {

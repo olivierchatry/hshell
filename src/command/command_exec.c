@@ -12,7 +12,7 @@ static void command_exec_child(shell_t *shell, command_chain_t *chain, command_t
 	free(exec_path);
 	shell_free(shell);
 	command_chain_free(chain);
-	_exit(EXIT_FAILURE);	
+	_exit(127);	
 }
 
 void command_exec(shell_t *shell, command_chain_t *chain) {
@@ -28,10 +28,14 @@ void command_exec(shell_t *shell, command_chain_t *chain) {
 				int pid = fork();
 				if (pid) {
 					waitpid(pid, &status, 0);
-					shell->child_exit_code = status;
+					shell->child_exit_code = WEXITSTATUS(status);
+					shell->exit_code = shell->child_exit_code;
 				} else {
 					command_exec_child(shell, chain, cmd);
 				}
+			} else {
+				shell->child_exit_code = status;
+				shell->exit_code = status;
 			}
 			
 			if ( ((status == 0) && (cmd->op == SHELL_OP_OR)) || ((status != 0) && (cmd->op == SHELL_OP_AND))) {
