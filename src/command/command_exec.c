@@ -28,7 +28,7 @@ void command_exec(shell_t *shell, command_chain_t *chain) {
 				int pid = fork();
 				if (pid) {
 					waitpid(pid, &status, 0);
-					shell->child_exit_code = status;
+					shell->child_exit_code = WEXITSTATUS(status);
 				} else {
 					command_exec_child(shell, chain, cmd);
 				}
