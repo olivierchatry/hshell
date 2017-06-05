@@ -10,7 +10,7 @@ void command_remove_comment(command_chain_t *chain) {
 		char at = *line;
 		switch (at) {
 			case '#': 
-				in = (inhib == 0 && in_word == 0);
+				in = in || (inhib == 0 && in_word == 0);
 				break;
 			case '"': 
 			case '\'':
