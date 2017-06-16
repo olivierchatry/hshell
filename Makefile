@@ -1,5 +1,5 @@
 BUILD_DIR = ./build
-TARGET=simple_shell
+TARGET=hsh
 
 SRCS=src/main.c \
 	src/command/command_get.c \
@@ -66,3 +66,7 @@ $(BUILD_DIR)/%.o : %.c
 .PHONY : clean
 clean:
 	$(RM) $(OBJS) $(DEPS) $(TARGET) vgcore*
+	$(RM) -r $(BUILD_DIR)
+
+.PHONY	: re
+re	: clean all
