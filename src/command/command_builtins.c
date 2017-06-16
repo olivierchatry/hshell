@@ -53,9 +53,9 @@ void builtin_setenv(shell_t *shell, command_t *cmd, int *status) {
 }
 
 void builtin_exit(shell_t *shell, command_t *cmd, int *status) {
+	shell->exit = 1;
 	if (cmd->argv_size > 2) {
 		if (hisnumber(cmd->argv[1], hstrlen(cmd->argv[1]))) {
-			shell->exit = 1;
 			shell->exit_code = hatoi(cmd->argv[1]);
 		} else {
 			hprint_error("exit", "illegal number\n");
