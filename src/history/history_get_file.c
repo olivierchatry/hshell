@@ -1,20 +1,28 @@
 #include <hshell.h>
 #include "utils/hlib.h"
 
-char	*history_get_file() {
+/**
+ * history_get_file - Locate history file
+ *
+ * Return: Path to the history file
+ */
+char *history_get_file(void)
+{
 	const char	*home;
 	const char	*history = ".simple_shell_history";
 	char				*path = NULL;
 
 	home = util_get_home();
-	if (home) {
+	if (home)
+	{
 		path = malloc(hstrlen(home) + hstrlen(history) + 2);
-		if (path) {
+		if (path)
+		{
 			hstrcpy(path, home);
 			hstrcat(path, "/");
 			hstrcat(path, history);
 		}
 	}
 
-	return path;
+	return (path);
 }

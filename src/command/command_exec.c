@@ -15,35 +15,48 @@ static void command_exec_child(shell_t *shell, command_chain_t *chain, command_t
 	_exit(127);	
 }
 
-void command_exec(shell_t *shell, command_chain_t *chain) {
+void command_exec(shell_t *shell, command_chain_t *chain)
+{
 	int	status = 0;
 	int	index = 0;
-	
-	while (chain->root.commands[index]) {
+
+	while (chain->root.commands[index])
+	{
 		command_t *cmd;
-		alias_expand(shell, chain);	
+
+		alias_expand(shell, chain);
 		cmd = chain->root.commands[index];
-		if (cmd && (cmd->argv_size > 1)) {
-			if (!command_builtins(shell, cmd, &status)) {
+		if (cmd && (cmd->argv_size > 1))
+		{
+			if (!command_builtins(shell, cmd, &status))
+			{
 				int pid = fork();
-				if (pid) {
+
+				if (pid)
+				{
 					waitpid(pid, &status, 0);
 					shell->child_exit_code = WEXITSTATUS(status);
 					shell->exit_code = shell->child_exit_code;
-				} else {
+				}
+				else
+				{
 					command_exec_child(shell, chain, cmd);
 				}
-			} else {
+			}
+			else
+			{
 				shell->child_exit_code = status;
 				shell->exit_code = status;
 			}
-			
-			if ( ((status == 0) && (cmd->op == SHELL_OP_OR)) || ((status != 0) && (cmd->op == SHELL_OP_AND))) {
-				while (chain->root.commands[index] && chain->root.commands[index]->op == cmd->op) {
+
+			if (((status == 0) && (cmd->op == SHELL_OP_OR)) || ((status != 0) && (cmd->op == SHELL_OP_AND)))
+			{
+				while (chain->root.commands[index] && chain->root.commands[index]->op == cmd->op)
+				{
 					index++;
 				}
 			}
 		}
-		index += cmd != NULL;			
+		index += cmd != NULL;
 	}
 }

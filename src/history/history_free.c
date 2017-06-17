@@ -1,9 +1,17 @@
 #include <hshell.h>
 
-void history_free(shell_t *shell) {
+/**
+ * history_free - Deallocates history
+ * @shell: Shell structure
+ */
+void history_free(shell_t *shell)
+{
 	int index;
-	for (index = 0; index < shell->history_size; ++index) {
-		if (shell->history[index]) {
+
+	for (index = 0; index < shell->history_size; ++index)
+	{
+		if (shell->history[index])
+		{
 			free(shell->history[index]);
 		}
 	}

@@ -6,18 +6,30 @@
 #include <hshell.h>
 #include "utils/hlib.h"
 
-void history_save(shell_t *shell) {
+/**
+ * history_save - Saves shell commands history to a file
+ * @shell: Shell data structure
+ */
+void history_save(shell_t *shell)
+{
 	char	*path;
-	
-	if (shell->history_count > 0) {
+
+	if (shell->history_count > 0)
+	{
 		path = history_get_file();
-		if (path) {
+		if (path)
+		{
 			int fd = open(path, O_TRUNC | O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
-			if (fd != -1) {
+
+			if (fd != -1)
+			{
 				int start	= shell->history_write_index;
 				int stop	= (shell->history_write_index - 1 + shell->history_size) % shell->history_size;
-				while ( (start != stop)) {				
-					if (shell->history[start]) {
+
+				while (start != stop)
+				{
+					if (shell->history[start])
+					{
 						write(fd, shell->history[start], hstrlen(shell->history[start]));
 						write(fd, "\n", 1);
 					}
@@ -25,7 +37,7 @@ void history_save(shell_t *shell) {
 				}
 				close(fd);
 			}
-		}	
+		}
 		free(path);
 	}
 
