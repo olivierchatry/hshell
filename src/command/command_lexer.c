@@ -41,7 +41,8 @@ static token_t s_tokens[] = {
 	/*
 	 * IMPORTANT
 	 * ">>" token needs to be BEFORE ">"
-	 * Otherwise, the lexer will detect two times the ">" token
+	 * Otherwise, the lexer will detect two times the ">" token instead
+	 * of 1 time ">>"
 	 *
 	 * Same goes for "<<" and "<"
 	 */

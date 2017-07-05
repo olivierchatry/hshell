@@ -38,14 +38,34 @@ int command_redirections(shell_t *shell, command_t *cmd, int *status)
 		fd = open(cmd->redirect, flags, mode);
 		if (fd == -1)
 		{
-			perror("open");
+			perror("hsh: open");
 			*status = 1;
 			return (0);
 		}
 		shell->saved_stdout = dup(STDOUT_FILENO);
 		if (dup2(fd, STDOUT_FILENO) == -1)
 		{
-			perror("dup2");
+			perror("hsh: dup2");
+			*status = 1;
+			return (0);
+		}
+		close(fd);
+	}
+	else if (cmd->redirect_type == SHELL_OP_REDIRECT_IN)
+	{
+		int fd;
+
+		fd = open(cmd->redirect, O_RDONLY);
+		if (fd == -1)
+		{
+			perror("hsh: open");
+			*status = 1;
+			return (0);
+		}
+		shell->saved_stdin = dup(STDIN_FILENO);
+		if (dup2(fd, STDIN_FILENO) == -1)
+		{
+			perror("hsh: dup2");
 			*status = 1;
 			return (0);
 		}

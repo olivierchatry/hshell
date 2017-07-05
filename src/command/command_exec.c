@@ -56,9 +56,16 @@ void command_exec(shell_t *shell, command_chain_t *chain)
 			if (shell->saved_stdout != -1)
 			{
 				/* Restore stdout */
-				dup2(shell->saved_stdout, 1);
+				dup2(shell->saved_stdout, STDOUT_FILENO);
 				close(shell->saved_stdout);
 				shell->saved_stdout = -1;
+			}
+			if (shell->saved_stdin != -1)
+			{
+				/* Restore stdin */
+				dup2(shell->saved_stdin, STDIN_FILENO);
+				close(shell->saved_stdin);
+				shell->saved_stdin = -1;
 			}
 
 			if (((status == 0) && (cmd->op == SHELL_OP_OR)) || ((status != 0) && (cmd->op == SHELL_OP_AND)))

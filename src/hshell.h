@@ -77,6 +77,7 @@ struct shell_s
 	int		fd;
 
 	int		saved_stdout;
+	int		saved_stdin;
 };
 
 
