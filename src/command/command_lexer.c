@@ -38,6 +38,17 @@ static token_t s_tokens[] = {
 	{"||",	2, SHELL_OP_OR},
 	{";",	1, SHELL_OP_NONE},
 	{"\n",	1, SHELL_OP_NONE},
+	/*
+	 * IMPORTANT
+	 * ">>" token needs to be BEFORE ">"
+	 * Otherwise, the lexer will detect two times the ">" token
+	 *
+	 * Same goes for "<<" and "<"
+	 */
+	{">>",	2, SHELL_OP_REDIRECT_OUT_CONCAT},
+	{">",	1, SHELL_OP_REDIRECT_OUT},
+	{"<<",	2, SHELL_OP_REDIRECT_IN_UNTIL},
+	{"<",	1, SHELL_OP_REDIRECT_IN},
 	{NULL,	0, SHELL_OP_NONE}
 };
 
@@ -52,7 +63,7 @@ static const char *command_skip_space(const char *str)
 
 static const char *command_skip_any(const char *str, char *quote)
 {
-	char	*delims = TOKEN_SPACE " \n&|;";
+	char	*delims = TOKEN_SPACE " \n&|;<>";
 	char	inhib = 0;
 
 	while (*str && (inhib || *quote || (hstrchr(delims, *str) == NULL)))
@@ -91,6 +102,8 @@ command_t *command_create(void)
 	ARRAY_INIT(cmd->commands);
 	cmd->op = SHELL_OP_NONE;
 	cmd->alias = NULL;
+	cmd->redirect_type = 0;
+	cmd->redirect = NULL;
 	return (cmd);
 }
 
@@ -120,6 +133,12 @@ int command_lexer(command_chain_t *chain)
 				ARRAY_ADD(chain->root.commands, cmd, COMMAND_BUFFER_SIZE);
 				cmd = command_create();
 				break;
+			case SHELL_OP_REDIRECT_OUT:
+			case SHELL_OP_REDIRECT_OUT_CONCAT:
+			case SHELL_OP_REDIRECT_IN:
+			case SHELL_OP_REDIRECT_IN_UNTIL:
+				cmd->redirect_type = token->id;
+				break;
 			}
 		}
 		else
@@ -127,7 +146,17 @@ int command_lexer(command_chain_t *chain)
 			end = command_skip_any(start, &quote);
 			if (end - start > 0)
 			{
-				ARRAY_ADD(cmd->argv, hstrndup(start, end - start), ARGV_BUFFER_SIZE);
+				if (cmd->redirect_type == SHELL_OP_REDIRECT_OUT ||
+					cmd->redirect_type == SHELL_OP_REDIRECT_OUT_CONCAT ||
+					cmd->redirect_type == SHELL_OP_REDIRECT_IN ||
+					cmd->redirect_type == SHELL_OP_REDIRECT_IN_UNTIL)
+				{
+					cmd->redirect = hstrndup(start, end - start);
+				}
+				else
+				{
+					ARRAY_ADD(cmd->argv, hstrndup(start, end - start), ARGV_BUFFER_SIZE);
+				}
 			}
 			else if (*end)
 			{

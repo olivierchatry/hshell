@@ -12,6 +12,7 @@ SRCS=src/main.c \
 	src/command/command_remove_comment.c \
 	src/command/command_remove_quote.c \
 	src/command/command_clone.c \
+	src/command/command_redirections.c \
 	src/shell/shell_init.c \
 	src/shell/shell_free.c \
 	src/shell/shell_getcwd.c \

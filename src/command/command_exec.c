@@ -28,7 +28,11 @@ void command_exec(shell_t *shell, command_chain_t *chain)
 		cmd = chain->root.commands[index];
 		if (cmd && (cmd->argv_size > 1))
 		{
-			if (!command_builtins(shell, cmd, &status))
+			if (!command_redirections(shell, cmd, &status))
+			{
+				shell->child_exit_code = status;
+			}
+			else if (!command_builtins(shell, cmd, &status))
 			{
 				int pid = fork();
 
@@ -36,7 +40,6 @@ void command_exec(shell_t *shell, command_chain_t *chain)
 				{
 					waitpid(pid, &status, 0);
 					shell->child_exit_code = WEXITSTATUS(status);
-					shell->exit_code = shell->child_exit_code;
 				}
 				else
 				{
@@ -46,7 +49,14 @@ void command_exec(shell_t *shell, command_chain_t *chain)
 			else
 			{
 				shell->child_exit_code = status;
-				shell->exit_code = status;
+			}
+			shell->exit_code = shell->child_exit_code;
+			if (shell->saved_stdout != -1)
+			{
+				/* Restore stdout */
+				dup2(shell->saved_stdout, 1);
+				close(shell->saved_stdout);
+				shell->saved_stdout = -1;
 			}
 
 			if (((status == 0) && (cmd->op == SHELL_OP_OR)) || ((status != 0) && (cmd->op == SHELL_OP_AND)))
