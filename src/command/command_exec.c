@@ -17,6 +17,32 @@ static void command_exec_child(shell_t *shell, command_chain_t *chain, command_t
 	_exit(127);
 }
 
+void restore_std_fd(shell_t *shell)
+{
+	if (shell->saved_std[0] != -1)
+	{
+		/* Restore stdin */
+		dup2(shell->saved_std[0], STDIN_FILENO);
+		close(shell->saved_std[0]);
+		shell->saved_std[0] = -1;
+	}
+	if (shell->saved_std[1] != -1)
+	{
+		/* Restore stdout */
+		dup2(shell->saved_std[1], STDOUT_FILENO);
+		close(shell->saved_std[1]);
+		shell->saved_std[1] = -1;
+	}
+	if (shell->saved_std[2] != -1)
+	{
+		/* Restore stderr */
+		dup2(shell->saved_std[2], STDERR_FILENO);
+		close(shell->saved_std[2]);
+		shell->saved_std[2] = -1;
+	}
+	unlink(HEREDOC_BUFFER_FILE);
+}
+
 void command_exec(shell_t *shell, command_chain_t *chain)
 {
 	int	status = 0;
@@ -53,20 +79,7 @@ void command_exec(shell_t *shell, command_chain_t *chain)
 				shell->child_exit_code = status;
 			}
 			shell->exit_code = shell->child_exit_code;
-			if (shell->saved_stdout != -1)
-			{
-				/* Restore stdout */
-				dup2(shell->saved_stdout, STDOUT_FILENO);
-				close(shell->saved_stdout);
-				shell->saved_stdout = -1;
-			}
-			if (shell->saved_stdin != -1)
-			{
-				/* Restore stdin */
-				dup2(shell->saved_stdin, STDIN_FILENO);
-				close(shell->saved_stdin);
-				shell->saved_stdin = -1;
-			}
+			restore_std_fd(shell);
 
 			if (((status == 0) && (cmd->op == SHELL_OP_OR)) || ((status != 0) && (cmd->op == SHELL_OP_AND)))
 			{

@@ -28,8 +28,11 @@
 #define SHELL_OP_ROOT			3
 #define SHELL_OP_REDIRECT_OUT_CONCAT	4
 #define SHELL_OP_REDIRECT_OUT		5
-#define SHELL_OP_REDIRECT_IN_UNTIL	6
+#define SHELL_OP_REDIRECT_IN_HEREDOC	6
 #define SHELL_OP_REDIRECT_IN		7
+#define SHELL_OP_REDIRECT_PIPE		8
+
+#define HEREDOC_BUFFER_FILE		"___heredoc___"
 
 struct command_s
 {
@@ -76,8 +79,7 @@ struct shell_s
 	int		is_tty;
 	int		fd;
 
-	int		saved_stdout;
-	int		saved_stdin;
+	int		saved_std[3];
 };
 
 

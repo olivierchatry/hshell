@@ -44,8 +44,9 @@ void shell_init(shell_t *shell, int argc, char **argv, char **envp)
 	shell->history_write_index = 0;
 	shell->history_count = 0;
 	shell->fd = 0;
-	shell->saved_stdout = -1;
-	shell->saved_stdout = -1;
+	shell->saved_std[0] = -1;
+	shell->saved_std[1] = -1;
+	shell->saved_std[2] = -1;
 	history_init(shell, 4096);
 	if (argc > 1)
 	{

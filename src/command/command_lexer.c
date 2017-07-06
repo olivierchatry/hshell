@@ -33,23 +33,24 @@ typedef struct token_s token_t;
 	{"<",  1, OP_REDIRECT_IN},
 */
 
+/*
+ * IMPORTANT
+ * ">>" token needs to be BEFORE ">"
+ * Otherwise, the lexer will detect two times the ">" token instead
+ * of 1 time ">>"
+ *
+ * Same goes for "<<" and "<", and "||" and "|", etc
+ */
 static token_t s_tokens[] = {
 	{"&&",	2, SHELL_OP_AND},
 	{"||",	2, SHELL_OP_OR},
 	{";",	1, SHELL_OP_NONE},
 	{"\n",	1, SHELL_OP_NONE},
-	/*
-	 * IMPORTANT
-	 * ">>" token needs to be BEFORE ">"
-	 * Otherwise, the lexer will detect two times the ">" token instead
-	 * of 1 time ">>"
-	 *
-	 * Same goes for "<<" and "<"
-	 */
 	{">>",	2, SHELL_OP_REDIRECT_OUT_CONCAT},
 	{">",	1, SHELL_OP_REDIRECT_OUT},
-	{"<<",	2, SHELL_OP_REDIRECT_IN_UNTIL},
+	{"<<",	2, SHELL_OP_REDIRECT_IN_HEREDOC},
 	{"<",	1, SHELL_OP_REDIRECT_IN},
+	{"|",	1, SHELL_OP_REDIRECT_PIPE},
 	{NULL,	0, SHELL_OP_NONE}
 };
 
@@ -137,7 +138,8 @@ int command_lexer(command_chain_t *chain)
 			case SHELL_OP_REDIRECT_OUT:
 			case SHELL_OP_REDIRECT_OUT_CONCAT:
 			case SHELL_OP_REDIRECT_IN:
-			case SHELL_OP_REDIRECT_IN_UNTIL:
+			case SHELL_OP_REDIRECT_IN_HEREDOC:
+			case SHELL_OP_REDIRECT_PIPE:
 				cmd->redirect_type = token->id;
 				break;
 			}
@@ -147,10 +149,11 @@ int command_lexer(command_chain_t *chain)
 			end = command_skip_any(start, &quote);
 			if (end - start > 0)
 			{
-				if (cmd->redirect_type == SHELL_OP_REDIRECT_OUT ||
+				if (!cmd->redirect &&
+					(cmd->redirect_type == SHELL_OP_REDIRECT_OUT ||
 					cmd->redirect_type == SHELL_OP_REDIRECT_OUT_CONCAT ||
 					cmd->redirect_type == SHELL_OP_REDIRECT_IN ||
-					cmd->redirect_type == SHELL_OP_REDIRECT_IN_UNTIL)
+					cmd->redirect_type == SHELL_OP_REDIRECT_IN_HEREDOC))
 				{
 					cmd->redirect = hstrndup(start, end - start);
 				}
