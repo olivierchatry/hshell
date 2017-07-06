@@ -46,11 +46,11 @@ static token_t s_tokens[] = {
 	{"||",	2, SHELL_OP_OR},
 	{";",	1, SHELL_OP_NONE},
 	{"\n",	1, SHELL_OP_NONE},
+	{"|",	1, SHELL_OP_PIPE},
 	{">>",	2, SHELL_OP_REDIRECT_OUT_CONCAT},
 	{">",	1, SHELL_OP_REDIRECT_OUT},
 	{"<<",	2, SHELL_OP_REDIRECT_IN_HEREDOC},
 	{"<",	1, SHELL_OP_REDIRECT_IN},
-	{"|",	1, SHELL_OP_REDIRECT_PIPE},
 	{NULL,	0, SHELL_OP_NONE}
 };
 
@@ -127,6 +127,8 @@ int command_lexer(command_chain_t *chain)
 			end = start + token->len;
 			switch (token->id)
 			{
+			case SHELL_OP_PIPE:
+				cmd->redirect_type = SHELL_OP_REDIRECT_PIPE_OUT;
 			case SHELL_OP_OR:
 			case SHELL_OP_AND:
 			case SHELL_OP_NONE:
@@ -134,12 +136,15 @@ int command_lexer(command_chain_t *chain)
 				ARRAY_ADD(cmd->argv, NULL, ARGV_BUFFER_SIZE);
 				ARRAY_ADD(chain->root.commands, cmd, COMMAND_BUFFER_SIZE);
 				cmd = command_create();
+				if (token->id == SHELL_OP_PIPE)
+				{
+					cmd->redirect_type = SHELL_OP_REDIRECT_PIPE_IN;
+				}
 				break;
 			case SHELL_OP_REDIRECT_OUT:
 			case SHELL_OP_REDIRECT_OUT_CONCAT:
 			case SHELL_OP_REDIRECT_IN:
 			case SHELL_OP_REDIRECT_IN_HEREDOC:
-			case SHELL_OP_REDIRECT_PIPE:
 				cmd->redirect_type = token->id;
 				break;
 			}

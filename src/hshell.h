@@ -26,13 +26,18 @@
 #define SHELL_OP_AND			1
 #define SHELL_OP_OR			2
 #define SHELL_OP_ROOT			3
-#define SHELL_OP_REDIRECT_OUT_CONCAT	4
-#define SHELL_OP_REDIRECT_OUT		5
-#define SHELL_OP_REDIRECT_IN_HEREDOC	6
-#define SHELL_OP_REDIRECT_IN		7
-#define SHELL_OP_REDIRECT_PIPE		8
+#define SHELL_OP_PIPE			4
+#define SHELL_OP_REDIRECT_OUT_CONCAT	5
+#define SHELL_OP_REDIRECT_OUT		6
+#define SHELL_OP_REDIRECT_IN_HEREDOC	7
+#define SHELL_OP_REDIRECT_IN		8
+#define SHELL_OP_REDIRECT_PIPE_OUT	9
+#define SHELL_OP_REDIRECT_PIPE_IN	10
 
 #define HEREDOC_BUFFER_FILE		"___heredoc___"
+
+#define PIPE_RD				0
+#define PIPE_WR				1
 
 struct command_s
 {
@@ -80,6 +85,7 @@ struct shell_s
 	int		fd;
 
 	int		saved_std[3];
+	int		pipefd[2];
 };
 
 

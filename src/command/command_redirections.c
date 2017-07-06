@@ -124,6 +124,18 @@ int handle_out_redirections(shell_t *shell, command_t *cmd, int *status)
 	return (1);
 }
 
+int handle_pipe(shell_t *shell, command_t *cmd, int *status)
+{
+	UNUSED(cmd);
+	if (pipe(shell->pipefd) == -1)
+	{
+		perror("hsh: pipe");
+		*status = 1;
+		return (0);
+	}
+	return (1);
+}
+
 /**
  * command_redirections - Handles I/O redirections before executing command
  * @shell: Shell structure
@@ -143,6 +155,8 @@ int command_redirections(shell_t *shell, command_t *cmd, int *status)
 		return (handle_in_redirection(shell, status, cmd->redirect));
 	case SHELL_OP_REDIRECT_IN_HEREDOC:
 		return (handle_heredoc(shell, cmd, status));
+	case SHELL_OP_REDIRECT_PIPE_OUT:
+		return (handle_pipe(shell, cmd, status));
 	default:
 		return (1);
 	}

@@ -15,9 +15,13 @@ void print_chain(command_chain_t *chain)
 		cmd = chain->root.commands[i];
 		for (j = 0; cmd->argv && cmd->argv[j]; j++)
 		{
-			printf(",%s", cmd->argv[j]);
+			if (j)
+				printf(",");
+			printf("%s", cmd->argv[j]);
 		}
 		printf("\n");
+		printf("OP: %d\n", cmd->op);
+		printf("IO: %d\n", cmd->redirect_type);
 	}
 	printf("\n");
 }

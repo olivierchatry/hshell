@@ -3,7 +3,8 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-static void command_exec_child(shell_t *shell, command_chain_t *chain, command_t *cmd) {
+static void command_exec_child(shell_t *shell, command_chain_t *chain, command_t *cmd)
+{
 	char *exec_path = path_expand(shell, cmd->argv[0]);
 
 	if (exec_path)
@@ -66,11 +67,36 @@ void command_exec(shell_t *shell, command_chain_t *chain)
 
 				if (pid)
 				{
+					if (cmd->redirect_type == SHELL_OP_REDIRECT_PIPE_OUT)
+						close(shell->pipefd[PIPE_WR]);
+					else if (cmd->redirect_type == SHELL_OP_REDIRECT_PIPE_IN)
+						close(shell->pipefd[PIPE_RD]);
+
 					waitpid(pid, &status, 0);
 					shell->child_exit_code = WEXITSTATUS(status);
 				}
 				else
 				{
+					if (cmd->redirect_type == SHELL_OP_REDIRECT_PIPE_OUT)
+					{
+						if (dup2(shell->pipefd[PIPE_WR], STDOUT_FILENO) == -1)
+						{
+							perror("hsh: dup2");
+							_exit(EXIT_FAILURE);
+						}
+						close(shell->pipefd[PIPE_RD]);
+						close(shell->pipefd[PIPE_WR]);
+					}
+					else if (cmd->redirect_type == SHELL_OP_REDIRECT_PIPE_IN)
+					{
+						if (dup2(shell->pipefd[PIPE_RD], STDIN_FILENO) == -1)
+						{
+							perror("hsh: dup2");
+							_exit(EXIT_FAILURE);
+						}
+						close(shell->pipefd[PIPE_RD]);
+						close(shell->pipefd[PIPE_WR]);
+					}
 					command_exec_child(shell, chain, cmd);
 				}
 			}
