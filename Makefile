@@ -46,7 +46,14 @@ SRCS=src/main.c \
 	src/utils/util_get_user.c \
 	src/utils/util_get_hostname.c \
 	src/prompt/prompt_print.c \
-	src/prompt/prompt_expand.c 
+	src/prompt/prompt_expand.c \
+	src/prompt/prompt_date.c \
+	src/prompt/prompt_hostname.c \
+	src/prompt/prompt_shell.c \
+	src/prompt/prompt_user.c \
+	src/prompt/prompt_version.c \
+	src/prompt/prompt_current_folder.c \
+	src/prompt/prompt_uid.c
 
 OBJS = $(SRCS:%.c=$(BUILD_DIR)/%.o)
 DEPS=$(OBJS:%.o=%.d)

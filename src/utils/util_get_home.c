@@ -5,13 +5,20 @@
 #include <sys/types.h>
 #include <pwd.h>
 
-const char *util_get_home() {
-	const char		*path = NULL;
+/**
+ * util_get_home - Retrieves the user's home directory
+ *
+ * Return: User's home directory path
+ */
+const char *util_get_home(void)
+{
+	const char *path = NULL;
 	struct passwd *pws;
-	
+
 	pws = getpwuid(geteuid());
-	if (pws) {
+	if (pws)
+	{
 		path = pws->pw_dir;
 	}
-	return path;
+	return (path);
 }

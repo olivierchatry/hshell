@@ -19,12 +19,13 @@ void history_save(shell_t *shell)
 		path = history_get_file();
 		if (path)
 		{
-			int fd = open(path, O_TRUNC | O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
+			int fd = open(path, O_WRONLY | O_CREAT | O_TRUNC,
+				S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 
 			if (fd != -1)
 			{
-				int start	= shell->history_write_index;
-				int stop	= (shell->history_write_index - 1 + shell->history_size) % shell->history_size;
+				int start = shell->history_write_index;
+				int stop = (start - 1 + shell->history_size) % shell->history_size;
 
 				while (start != stop)
 				{

@@ -9,8 +9,8 @@
 char *history_get_file(void)
 {
 	const char	*home;
-	const char	*history = ".simple_shell_history";
-	char				*path = NULL;
+	const char	*history = SHELL_HISTORY_FILE;
+	char		*path = NULL;
 
 	home = util_get_home();
 	if (home)

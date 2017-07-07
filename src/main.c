@@ -1,7 +1,11 @@
-#include <hshell.h>
+#include "hshell.h"
 #include "utils/hlib.h"
 
 #include <stdio.h>
+/**
+ * print_chain - DEBUG: Prints out the chain of commands in details
+ * @chain: Pointer to the chain to be printed
+ */
 void print_chain(command_chain_t *chain)
 {
 	int i, j;
@@ -34,14 +38,14 @@ void print_chain(command_chain_t *chain)
  *
  * Return: EXIT_SUCCESS or error code
  */
-int main(int argc, char **argv, char **envp)
+int main(int argc, char *argv[], char *envp[])
 {
 	shell_t shell;
 
 	shell_init(&shell, argc, argv, envp);
 	shell_getcwd(&shell);
 	history_load(&shell);
-	while (shell.exit == 0)
+	while (shell.exit == false)
 	{
 		command_chain_t chain;
 
@@ -66,7 +70,7 @@ int main(int argc, char **argv, char **envp)
 				command_expand(&shell, &chain);
 				if (command_lexer(&chain) == 1)
 				{
-					/* DEGUB PRINT */
+					/* DEGUB */
 					/*print_chain(&chain);*/
 					command_remove_quote(&chain);
 					command_exec(&shell, &chain);

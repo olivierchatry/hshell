@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include "utils/array.h"
 
+#define SHELL_NAME			"hsh"
+#define SHELL_VERSION			"2.0"
+
 #define UNUSED(x) (void)x
 
 
@@ -35,9 +38,13 @@
 #define SHELL_OP_REDIRECT_PIPE_IN	10
 
 #define HEREDOC_BUFFER_FILE		"___heredoc___"
+#define SHELL_HISTORY_FILE		".hsh_history"
+#define SHELL_RUNCOM_FILE		".hshrc"
 
 #define PIPE_RD				0
 #define PIPE_WR				1
+
+typedef enum { false, true } bool;
 
 struct command_s
 {
@@ -73,7 +80,7 @@ struct shell_s
 	int		history_size;
 	int		history_count;
 
-	int		exit;
+	bool		exit;
 	int		exit_code;
 	char		**ARRAY(paths);
 	char  		*paths_string;
@@ -81,7 +88,7 @@ struct shell_s
 	int 		state;
 	int 		child_exit_code;
 
-	int		is_tty;
+	bool		is_tty;
 	int		fd;
 
 	int		saved_std[3];
@@ -123,17 +130,27 @@ void	history_load(shell_t *shell);
 void	history_save(shell_t *shell);
 char	*history_get_file();
 
-void	shell_init(shell_t *shell, int argc, char **argv, char **envp);
+void	shell_init(shell_t *shell, int argc, char *argv[], char *envp[]);
 void	shell_free(shell_t *shell);
 void	shell_getcwd(shell_t *shell);
 
 void	prompt_print(shell_t *shell);
 void	prompt_expand(shell_t* shell, const char* prompt);
 
-const char			*util_get_home();
+typedef void (*prompt_handler_t)(shell_t *, char);
+void	prompt_date(shell_t *shell, char id);
+void	prompt_hostname(shell_t *shell, char id);
+void	prompt_shell(shell_t *shell, char id);
+void	prompt_user(shell_t *shell, char id);
+void	prompt_version(shell_t *shell, char id);
+void	prompt_current_folder(shell_t *shell, char id);
+void	prompt_current_folder_full(shell_t *shell, char id);
+void	prompt_uid(shell_t *shell, char id);
+
+const char			*util_get_home(void);
 char				*util_read_file(const char* path);
-const char			*util_get_user();
-const char*			util_get_hostname();
+const char			*util_get_user(void);
+const char			*util_get_hostname(bool full);
 
 command_chain_t	*alias_get(shell_t *shell, const char *key);
 command_chain_t	*alias_set(shell_t *shell, char *alias, char *value);

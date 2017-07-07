@@ -1,61 +1,82 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <unistd.h>
 
 #include <hshell.h>
 #include "utils/hlib.h"
 
+typedef struct prompt_case_s
+{
+	char c;
+	prompt_handler_t handler;
+} prompt_case_t;
 
-static void	prompt_current_folder(shell_t *shell) {
-	const char *pwd = env_get(shell, "PWD");
-	if (hstrcmp(pwd, util_get_home()) == 0) {
-		ARRAY_ADD(shell->prompt, '~', PROMPT_BUFFER_SIZE);
-	} else {
-		int len = hstrlen(pwd) - 1;
-		int prev = len;
-		while (len && pwd[len] != '/') {
-			len--;
+/**
+ * prompt_cases - Expands prompt special characters
+ * @shell: Shell structure
+ * @at: Character to search a handler for
+ */
+void prompt_cases(shell_t *shell, char at)
+{
+	prompt_case_t prompt_handlers[] = {
+		{'d', &prompt_date},
+		{'H', &prompt_hostname},
+		{'h', &prompt_hostname},
+		{'s', &prompt_shell},
+		{'u', &prompt_user},
+		{'v', &prompt_version},
+		{'W', &prompt_current_folder},
+		{'w', &prompt_current_folder_full},
+		{'$', &prompt_uid},
+		{0, NULL}
+	};
+	prompt_handler_t handler;
+	int i;
+
+	for (i = 0; prompt_handlers[i].c; i++)
+	{
+		if (prompt_handlers[i].c == at)
+		{
+			handler = prompt_handlers[i].handler;
+			break;
 		}
-		if ( prev == len ) {
-			len --;
-		}
-		ARRAY_CAT(shell->prompt, (pwd + len + 1), prev - len, PROMPT_BUFFER_SIZE);
- 	}
+	}
+
+	if (handler)
+	{
+		(*handler)(shell, at);
+	}
+	else
+	{
+		ARRAY_ADD(shell->prompt, '\\', PROMPT_BUFFER_SIZE);
+		ARRAY_ADD(shell->prompt, at, PROMPT_BUFFER_SIZE);
+	}
 }
 
-void	prompt_expand(shell_t* shell, const char* prompt) {
+/**
+ * prompt_expand - Expands prompt PS1
+ * @shell: Shell structure
+ * @prompt: PS1
+ */
+void prompt_expand(shell_t *shell, const char *prompt)
+{
 	int	state = 0;
-	ARRAY_RESET(shell->prompt);
 
-	while (*prompt) {
+	ARRAY_RESET(shell->prompt);
+	while (*prompt)
+	{
 		char at = *prompt;
-		if (state) {
-			const char* add = NULL;
-			switch (at) {
-			case 'u':
-				add = util_get_user();
-				break;
-			case 'h':
-				add = util_get_hostname();
-				break;
-			case 'W':
-				prompt_current_folder(shell);
-				break;
-			case '$':
-				add = getuid() == 0 ? "#" : "$";
-				break;
-			default:
-				ARRAY_ADD(shell->prompt, '\\', PROMPT_BUFFER_SIZE);
-				ARRAY_ADD(shell->prompt, at, PROMPT_BUFFER_SIZE);
-			}
-			if (add) {
-				ARRAY_CAT(shell->prompt, add, hstrlen(add), PROMPT_BUFFER_SIZE);
-			}
+
+		if (state)
+		{
+			prompt_cases(shell, at);
 			state = 0;
-		} else {
+		}
+		else
+		{
 			state = *prompt == '\\';
-			if (!state) {
+			if (!state)
+			{
 				ARRAY_ADD(shell->prompt, at, PROMPT_BUFFER_SIZE);
 			}
 		}
