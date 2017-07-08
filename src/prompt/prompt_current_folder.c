@@ -9,8 +9,11 @@
 void prompt_current_folder(shell_t *shell, char id)
 {
 	const char *pwd = env_get(shell, "PWD");
+	const char *home = env_get(shell, "HOME");
 
-	if (hstrcmp(pwd, util_get_home()) == 0)
+	if (home == NULL)
+		home = util_get_home();
+	if (hstrcmp(pwd, home) == 0)
 	{
 		ARRAY_ADD(shell->prompt, '~', PROMPT_BUFFER_SIZE);
 	}
