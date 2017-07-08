@@ -1,35 +1,6 @@
 #include "hshell.h"
 #include "utils/hlib.h"
 
-#include <stdio.h>
-/**
- * print_chain - DEBUG: Prints out the chain of commands in details
- * @chain: Pointer to the chain to be printed
- */
-void print_chain(command_chain_t *chain)
-{
-	int i, j;
-
-	printf("Command chain:\n");
-	for (i = 0; chain->root.commands && chain->root.commands[i]; i++)
-	{
-		command_t *cmd;
-
-		printf("[%02d]:", i);
-		cmd = chain->root.commands[i];
-		for (j = 0; cmd->argv && cmd->argv[j]; j++)
-		{
-			if (j)
-				printf(",");
-			printf("%s", cmd->argv[j]);
-		}
-		printf("\n");
-		printf("OP: %d\n", cmd->op);
-		printf("IO: %d\n", cmd->redirect_type);
-	}
-	printf("\n");
-}
-
 /**
  * main - Program entry point
  * @argc: Arguments counter
@@ -45,40 +16,22 @@ int main(int argc, char *argv[], char *envp[])
 	shell_init(&shell, argc, argv, envp);
 	shell_getcwd(&shell);
 	history_load(&shell);
+	shellrc_load(&shell);
 	while (shell.exit == false)
 	{
-		command_chain_t chain;
-
 		prompt_print(&shell);
-		command_init(&chain);
 		if (command_get(shell.fd, &shell) == ERR_GET_COMMAND_EOF)
 		{
 			shell.exit = shell.line_size == 0;
 			ARRAY_RESET(shell.line);
 		}
-		else
+		else if (shell.line)
 		{
-			if (shell.line)
+			if (command_run(&shell, shell.line))
 			{
-				chain.line = hstrdup(shell.line);
-				if (shell.is_tty)
-				{
-					history_expand(&shell, &chain);
-					history_add(&shell, chain.line);
-				}
-				command_remove_comment(&chain);
-				command_expand(&shell, &chain);
-				if (command_lexer(&chain) == 1)
-				{
-					/* DEGUB */
-					/*print_chain(&chain);*/
-					command_remove_quote(&chain);
-					command_exec(&shell, &chain);
-					ARRAY_RESET(shell.line);
-				}
+				ARRAY_RESET(shell.line);
 			}
 		}
-		command_chain_free(&chain);
 	}
 	history_save(&shell);
 	shell_free(&shell);

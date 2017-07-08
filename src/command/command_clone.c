@@ -17,5 +17,7 @@ command_t *command_clone(command_t *command) {
 	}
 	new->op = command->op;
 	new->alias = command->alias;
+	new->redirect = command->redirect;
+	new->redirect_type = command->redirect_type;
 	return new;
 }

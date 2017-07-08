@@ -3,6 +3,7 @@ TARGET=hsh
 
 SRCS=src/main.c \
 	src/command/command_get.c \
+	src/command/command_run.c \
 	src/command/command_free.c \
 	src/command/command_init.c \
 	src/command/command_exec.c \
@@ -14,6 +15,7 @@ SRCS=src/main.c \
 	src/command/command_clone.c \
 	src/command/command_redirections.c \
 	src/shell/shell_init.c \
+	src/shell/shellrc_load.c \
 	src/shell/shell_free.c \
 	src/shell/shell_getcwd.c \
 	src/alias/alias_get_index.c \

@@ -109,6 +109,7 @@ typedef struct shell_s shell_t;
 #define TOKEN_SPACE " \t\a\v\r\f"
 
 int 			command_get(int fd, shell_t *shell);
+int			command_run(shell_t *shell, const char *line);
 void			command_chain_free(command_chain_t *command);
 void			command_init(command_chain_t *command);
 void			command_split(command_chain_t *command);
@@ -131,6 +132,7 @@ void	history_save(shell_t *shell);
 char	*history_get_file();
 
 void	shell_init(shell_t *shell, int argc, char *argv[], char *envp[]);
+void	shellrc_load(shell_t *shell);
 void	shell_free(shell_t *shell);
 void	shell_getcwd(shell_t *shell);
 
