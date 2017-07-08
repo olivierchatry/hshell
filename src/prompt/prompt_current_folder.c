@@ -4,9 +4,10 @@
 /**
  * prompt_current_folder - Retrieves the basename of the current directory
  * @shell: Shell structure
+ * @prompt: Structure containing the expanded string
  * @id: Prompt special character identifier
  */
-void prompt_current_folder(shell_t *shell, char id)
+void prompt_current_folder(shell_t *shell, prompt_t *prompt, char id)
 {
 	const char *pwd = env_get(shell, "PWD");
 	const char *home = env_get(shell, "HOME");
@@ -15,7 +16,7 @@ void prompt_current_folder(shell_t *shell, char id)
 		home = util_get_home();
 	if (hstrcmp(pwd, home) == 0)
 	{
-		ARRAY_ADD(shell->prompt, '~', PROMPT_BUFFER_SIZE);
+		ARRAY_ADD(prompt->prompt, '~', PROMPT_BUFFER_SIZE);
 	}
 	else
 	{
@@ -30,7 +31,7 @@ void prompt_current_folder(shell_t *shell, char id)
 		{
 			len--;
 		}
-		ARRAY_CAT(shell->prompt, (pwd + len + 1), prev - len, PROMPT_BUFFER_SIZE);
+		ARRAY_CAT(prompt->prompt, (pwd + len + 1), prev - len, PROMPT_BUFFER_SIZE);
 	}
 	UNUSED(id);
 }
@@ -38,9 +39,10 @@ void prompt_current_folder(shell_t *shell, char id)
 /**
  * prompt_current_folder_full - Expands the full current directory path
  * @shell: Shell structure
+ * @prompt: Structure containing the expanded string
  * @id: Prompt special character identifier
  */
-void prompt_current_folder_full(shell_t *shell, char id)
+void prompt_current_folder_full(shell_t *shell, prompt_t *prompt, char id)
 {
 	const char *pwd = env_get(shell, "PWD");
 	const char *home = env_get(shell, "HOME");
@@ -50,10 +52,10 @@ void prompt_current_folder_full(shell_t *shell, char id)
 		home = util_get_home();
 	if (hstrncmp(pwd, home, hstrlen(home)) == 0)
 	{
-		ARRAY_ADD(shell->prompt, '~', PROMPT_BUFFER_SIZE);
+		ARRAY_ADD(prompt->prompt, '~', PROMPT_BUFFER_SIZE);
 		len = hstrlen(home);
 	}
-	ARRAY_CAT(shell->prompt, (pwd + len),
+	ARRAY_CAT(prompt->prompt, (pwd + len),
 		hstrlen(pwd) - len, PROMPT_BUFFER_SIZE);
 	UNUSED(id);
 }

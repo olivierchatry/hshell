@@ -4,9 +4,10 @@
 /**
  * prompt_hostname - Expands the hostname
  * @shell: Shell structure
+ * @prompt: Structure containing the expanded string
  * @id: Prompt special character identifier
  */
-void prompt_hostname(shell_t *shell, char id)
+void prompt_hostname(shell_t *shell, prompt_t *prompt, char id)
 {
 	const char *hostname;
 
@@ -16,5 +17,6 @@ void prompt_hostname(shell_t *shell, char id)
 		hostname = util_get_hostname(false);
 
 	if (hostname)
-		ARRAY_CAT(shell->prompt, hostname, hstrlen(hostname), PROMPT_BUFFER_SIZE);
+		ARRAY_CAT(prompt->prompt, hostname, hstrlen(hostname), PROMPT_BUFFER_SIZE);
+	UNUSED(shell);
 }

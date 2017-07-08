@@ -62,7 +62,11 @@ int handle_heredoc(shell_t *shell, command_t *cmd, int *status)
 	}
 	while (42)
 	{
-		write(1, "> ", 2);
+		char *ps2 = env_get(shell, "PS2");
+
+		ps2 = prompt_expand(shell, ps2 ? ps2 : "> ");
+		write(1, ps2, hstrlen(ps2));
+		free(ps2);
 		ret = getline(&line, &size, stdin);
 		if (ret <= 0)
 			break;
@@ -124,6 +128,14 @@ int handle_out_redirections(shell_t *shell, command_t *cmd, int *status)
 	return (1);
 }
 
+/**
+ * handle_pipe - Handles pipe redirections
+ * @shell: Shell structure
+ * @cmd: Command structure
+ * @status: Command exit status to be set
+ *
+ * Return: 1 on succes, 0 on failure
+ */
 int handle_pipe(shell_t *shell, command_t *cmd, int *status)
 {
 	UNUSED(cmd);

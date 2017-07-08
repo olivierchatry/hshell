@@ -135,17 +135,23 @@ void	shell_free(shell_t *shell);
 void	shell_getcwd(shell_t *shell);
 
 void	prompt_print(shell_t *shell);
-void	prompt_expand(shell_t* shell, const char* prompt);
+char	*prompt_expand(shell_t* shell, const char* prompt);
 
-typedef void (*prompt_handler_t)(shell_t *, char);
-void	prompt_date(shell_t *shell, char id);
-void	prompt_hostname(shell_t *shell, char id);
-void	prompt_shell(shell_t *shell, char id);
-void	prompt_user(shell_t *shell, char id);
-void	prompt_version(shell_t *shell, char id);
-void	prompt_current_folder(shell_t *shell, char id);
-void	prompt_current_folder_full(shell_t *shell, char id);
-void	prompt_uid(shell_t *shell, char id);
+typedef struct prompt_s
+{
+	char *ARRAY(prompt);
+} prompt_t;
+
+typedef void (*prompt_handler_t)(shell_t *, prompt_t *, char);
+
+void	prompt_date(shell_t *shell, prompt_t *, char id);
+void	prompt_hostname(shell_t *shell, prompt_t *, char id);
+void	prompt_shell(shell_t *shell, prompt_t *, char id);
+void	prompt_user(shell_t *shell, prompt_t *, char id);
+void	prompt_version(shell_t *shell, prompt_t *, char id);
+void	prompt_current_folder(shell_t *shell, prompt_t *, char id);
+void	prompt_current_folder_full(shell_t *shell, prompt_t *, char id);
+void	prompt_uid(shell_t *shell, prompt_t *, char id);
 
 const char			*util_get_home(void);
 char				*util_read_file(const char* path);

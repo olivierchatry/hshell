@@ -5,9 +5,10 @@
 /**
  * prompt_date - Expands today's date
  * @shell: Shell structure
+ * @prompt: Structure containing the expanded string
  * @id: Prompt special character identifier
  */
-void prompt_date(shell_t *shell, char id)
+void prompt_date(shell_t *shell, prompt_t *prompt, char id)
 {
 	time_t t = time(NULL);
 	struct tm tm = *localtime(&t);
@@ -21,9 +22,9 @@ void prompt_date(shell_t *shell, char id)
 	int day = tm.tm_mday;
 
 	UNUSED(id);
-	ARRAY_CAT(shell->prompt, days[tm.tm_wday], 4, PROMPT_BUFFER_SIZE);
-	ARRAY_CAT(shell->prompt, months[tm.tm_mon], 4, PROMPT_BUFFER_SIZE);
-	if (day >= 10)
-		ARRAY_ADD(shell->prompt, (day / 10) + '0', PROMPT_BUFFER_SIZE);
-	ARRAY_ADD(shell->prompt, (day % 10) + '0', PROMPT_BUFFER_SIZE);
+	ARRAY_CAT(prompt->prompt, days[tm.tm_wday], 4, PROMPT_BUFFER_SIZE);
+	ARRAY_CAT(prompt->prompt, months[tm.tm_mon], 4, PROMPT_BUFFER_SIZE);
+	ARRAY_ADD(prompt->prompt, (day / 10) + '0', PROMPT_BUFFER_SIZE);
+	ARRAY_ADD(prompt->prompt, (day % 10) + '0', PROMPT_BUFFER_SIZE);
+	UNUSED(shell);
 }

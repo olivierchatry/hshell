@@ -14,9 +14,10 @@ typedef struct prompt_case_s
 /**
  * prompt_cases - Expands prompt special characters
  * @shell: Shell structure
+ * @prompt: Structure containing the expanded string
  * @at: Character to search a handler for
  */
-void prompt_cases(shell_t *shell, char at)
+void prompt_cases(shell_t *shell, prompt_t *prompt, char at)
 {
 	prompt_case_t prompt_handlers[] = {
 		{'d', &prompt_date},
@@ -44,43 +45,51 @@ void prompt_cases(shell_t *shell, char at)
 
 	if (handler)
 	{
-		(*handler)(shell, at);
+		(*handler)(shell, prompt, at);
 	}
 	else
 	{
-		ARRAY_ADD(shell->prompt, '\\', PROMPT_BUFFER_SIZE);
-		ARRAY_ADD(shell->prompt, at, PROMPT_BUFFER_SIZE);
+		ARRAY_ADD(prompt->prompt, '\\', PROMPT_BUFFER_SIZE);
+		ARRAY_ADD(prompt->prompt, at, PROMPT_BUFFER_SIZE);
 	}
 }
 
 /**
- * prompt_expand - Expands prompt PS1
+ * prompt_expand - Expands prompt PS1/PS2/PS3/PS4
  * @shell: Shell structure
- * @prompt: PS1
+ * @ps: PS1/2/3/4 to be expanded
+ *
+ * Return: Expanded prompt
  */
-void prompt_expand(shell_t *shell, const char *prompt)
+char *prompt_expand(shell_t *shell, const char *ps)
 {
-	int	state = 0;
+	int		state = 0;
+	prompt_t	prompt;
+	char		*ret;
 
-	ARRAY_RESET(shell->prompt);
-	while (*prompt)
+	/*ARRAY_RESET(prompt.prompt);*/
+	ARRAY_INIT(prompt.prompt);
+	while (*ps)
 	{
-		char at = *prompt;
+		char at = *ps;
 
 		if (state)
 		{
-			prompt_cases(shell, at);
+			prompt_cases(shell, &prompt, at);
 			state = 0;
 		}
 		else
 		{
-			state = *prompt == '\\';
+			state = *ps == '\\';
 			if (!state)
 			{
-				ARRAY_ADD(shell->prompt, at, PROMPT_BUFFER_SIZE);
+				ARRAY_ADD(prompt.prompt, at, PROMPT_BUFFER_SIZE);
 			}
 		}
-		prompt++;
+		ps++;
 	}
-	ARRAY_ADD(shell->prompt, 0, PROMPT_BUFFER_SIZE);
+	ARRAY_ADD(prompt.prompt, 0, PROMPT_BUFFER_SIZE);
+	ret = hstrdup(prompt.prompt);
+	ARRAY_FREE(prompt.prompt);
+	return (ret);
 }
