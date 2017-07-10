@@ -1,7 +1,7 @@
 BUILD_DIR = ./build
 TARGET=hsh
 
-SRCS=src/main.c \
+SRCS=	src/main.c \
 	src/command/command_get.c \
 	src/command/command_run.c \
 	src/command/command_free.c \
@@ -47,6 +47,7 @@ SRCS=src/main.c \
 	src/utils/util_read_file.c \
 	src/utils/util_get_user.c \
 	src/utils/util_get_hostname.c \
+	src/utils/hperror.c \
 	src/prompt/prompt_print.c \
 	src/prompt/prompt_expand.c \
 	src/prompt/prompt_date.c \

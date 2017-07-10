@@ -2,22 +2,6 @@
 #include <unistd.h>
 #include <stdarg.h>
 #include <stdio.h>
-#include <stdarg.h>
-#include <stdio.h>
-
-int hprint_error(const char *command, const char *msg, ...) {
-	const char *shell_name = "hshell";
-	va_list args;
-	int ret;
-
-	va_start(args, msg);
-	ret = printf("%s: %s: ", shell_name, command);
-	ret += vprintf(msg, args);
-	fflush(stdout);
-	va_end(args);
-
-	return ret;
-}
 
 int	hisnumber(const char *str, int n) {
 	int not;
@@ -28,10 +12,10 @@ int	hisnumber(const char *str, int n) {
 	return not;
 }
 
-void	*hcalloc(int size) {	
+void	*hcalloc(int size) {
 	void	*ret;
 	int		*set;
-	
+
 	size = (size + 3) & ~3;
 	ret = malloc(size);
 	set = (int*)ret;
@@ -54,7 +38,7 @@ int hatoin(const char *str, int n) {
 	}
 
 	start = str;
-	
+
 	for (;*str && (*str >= '0' && *str <= '9') && n; ++str, --n);
 	end = str;
 	while (start != end) {
@@ -70,14 +54,14 @@ int hatoi(const char *str) {
 	int					neg = 0;
 	const char	*start = str;
 	const char	*end;
-	
+
 	for (;*str && !(*str >= '0' && *str <= '9'); ++str) {
 		if (*str == '-') {
 			neg = !neg;
-		}		
+		}
 	}
 	start = str;
-	for (;*str && (*str >= '0' && *str <= '9'); ++str);	
+	for (;*str && (*str >= '0' && *str <= '9'); ++str);
 	end = str;
 	while (start != end) {
 		number *= 10;

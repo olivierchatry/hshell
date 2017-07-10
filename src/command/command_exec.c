@@ -11,7 +11,7 @@ static void command_exec_child(shell_t *shell, command_chain_t *chain, command_t
 	{
 		execve(exec_path, cmd->argv, shell->envp);
 	}
-	hprintf("%s: command not found.\n", exec_path ? exec_path : cmd->argv[0]);
+	hperror(shell, exec_path ? exec_path : cmd->argv[0], "not found\n");
 	free(exec_path);
 	shell_free(shell);
 	command_chain_free(chain);

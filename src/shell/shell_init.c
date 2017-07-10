@@ -68,6 +68,8 @@ void shell_init(shell_t *shell, int argc, char *argv[], char *envp[])
 	shell->saved_std[0] = -1;
 	shell->saved_std[1] = -1;
 	shell->saved_std[2] = -1;
+	shell->shell_program = argv[0];
+	shell->line_no = 0;
 	history_init(shell, 4096);
 	shell_set_fd(shell, argc, argv);
 	while (*envp)

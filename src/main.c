@@ -27,6 +27,7 @@ int main(int argc, char *argv[], char *envp[])
 		}
 		else if (shell.line)
 		{
+			shell.line_no += 1;
 			command_run(&shell, shell.line);
 			ARRAY_RESET(shell.line);
 		}

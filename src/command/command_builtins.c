@@ -32,7 +32,7 @@ void builtin_alias(shell_t *shell, command_t *cmd, int *status) {
 
 void builtin_env(shell_t *shell, command_t *cmd, int *status) {
 	char	**envp = shell->envp;
-	char	*env_filter = cmd->argv_size > 2 ? cmd->argv[1] : NULL; 
+	char	*env_filter = cmd->argv_size > 2 ? cmd->argv[1] : NULL;
 	int		env_filter_len = env_filter ? hstrlen(env_filter) : 0;
 	while (*envp) {
 		if ( (env_filter_len == 0) || (hstrncmp(env_filter, *envp, env_filter_len) == 0)) {
@@ -59,7 +59,7 @@ void builtin_exit(shell_t *shell, command_t *cmd, int *status) {
 		if (hisnumber(cmd->argv[1], hstrlen(cmd->argv[1]))) {
 			*status = hatoi(cmd->argv[1]);
 		} else {
-			hprint_error("exit", "illegal number\n");
+			hperror(shell, "exit", "illegal number\n");
 			shell->exit = 0;
 			*status = 2;
 		}
@@ -87,7 +87,7 @@ void builtin_cd(shell_t *shell, command_t *cmd, int *status) {
 	};
 
 	if (cmd->argv_size > 2) {
-		path = cmd->argv[1]; 
+		path = cmd->argv[1];
 		if (hstrcmp(path, "-") == 0) {
 			path = env_get(shell, "OLDPWD");
 		}
@@ -105,14 +105,14 @@ void builtin_cd(shell_t *shell, command_t *cmd, int *status) {
 			char resolved = 0;
 			for (i = 0; errors[i].str != NULL; i++) {
 				if (errno == errors[i].code) {
-					hprint_error("cd", "%s\n", errors[i].str);
+					hperror(shell, "cd", "%s\n", errors[i].str);
 					resolved = 1;
 					break;
 				}
 			}
 			if (!resolved) {
 				/* chdir: Default failure message */
-				hprint_error("cd", "cannot cd to %s\n", path);
+				hperror(shell, "cd", "cannot cd to %s\n", path);
 			}
 		}
 	}

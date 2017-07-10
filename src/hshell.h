@@ -93,6 +93,9 @@ struct shell_s
 
 	int		saved_std[3];
 	int		pipefd[2];
+
+	const char	*shell_program;
+	int		line_no;
 };
 
 
@@ -107,6 +110,8 @@ typedef struct shell_s shell_t;
 #define ERR_GET_COMMAND_MEMORY	-3
 
 #define TOKEN_SPACE " \t\a\v\r\f"
+
+int	hperror(shell_t *shell, const char *command, const char *msg, ...);
 
 int 			command_get(int fd, shell_t *shell);
 int			command_run(shell_t *shell, const char *line);
