@@ -54,7 +54,7 @@ int command_run(shell_t *shell, const char *line)
 	{
 		command_remove_quote(&chain);
 		/* DEGUB */
-		print_chain(&chain);
+		/*print_chain(&chain);*/
 		command_exec(shell, &chain);
 		command_chain_free(&chain);
 		return (1);
