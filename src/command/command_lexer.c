@@ -1,4 +1,3 @@
-#include <string.h>
 #include <hshell.h>
 #include "utils/hlib.h"
 
@@ -106,7 +105,7 @@ static token_t *command_find_token(const char *str)
 {
 	token_t	*tokens = s_tokens;
 
-	while (tokens->token && (strncmp(str, tokens->token, tokens->len) != 0))
+	while (tokens->token && (hstrncmp(str, tokens->token, tokens->len) != 0))
 	{
 		tokens++;
 	}
