@@ -17,7 +17,7 @@
 		array##_buffer_size += add_buffer_size;\
 	}\
 	array[array##_size++]=(data)
-	
+
 #define ARRAY(array) array;\
 	int array##_size;\
 	int array##_buffer_size
@@ -40,7 +40,7 @@
 	array##_size=0;\
 	array##_buffer_size=0
 
-#define ARRAY_REMOVE(array, index) array[index]=array[--array##_size]
+#define ARRAY_REMOVE(array, index) (array[index] = array[--array##_size])
 
 #define ARRAY_EACH(array, fct) { \
 	int count;\
@@ -60,7 +60,7 @@ if (array##_size > 0) { \
 	array##_size=0;\
 	array##_buffer_size=0
 
-#define ARRAY_LAST(array) array[array##_size - 1]	
+#define ARRAY_LAST(array) array[array##_size - 1]
 
 #define ARRAY_SET(a, b) \
 a = b;\

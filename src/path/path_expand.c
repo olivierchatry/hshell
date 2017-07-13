@@ -5,9 +5,10 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#define TEMP_BUFFER_SIZE 	4096
+#define TEMP_BUFFER_SIZE	4096
 
-char	*path_expand(shell_t *shell, const char	*value) {
+char	*path_expand(shell_t *shell, const char	*value)
+{
 	struct stat	stat;
 	char				*temp = NULL;
 	int					temp_size = 0;
@@ -15,30 +16,35 @@ char	*path_expand(shell_t *shell, const char	*value) {
 	int					found = 0;
 	int					index;
 
-	if ((value[0] == '.') || (value[0] == '/')) {
-		return hstrdup(value);
+	if ((value[0] == '.') || (value[0] == '/'))
+	{
+		return (hstrdup(value));
 	}
 	value_size = hstrlen(value);
-	for (index = 0; (index < shell->paths_size) && !found; ++index) {
+	for (index = 0; (index < shell->paths_size) && !found; ++index)
+	{
 		const char	*path = shell->paths[index];
 		int path_size = hstrlen(path);
-		if (path_size + value_size >= temp_size) {
+
+		if (path_size + value_size >= temp_size)
+		{
 			temp_size += TEMP_BUFFER_SIZE;
 			free(temp);
 			temp = malloc(temp_size);
 		}
 		hstrcpy(temp, path);
-		if (path[path_size - 1] != '/') {
-			hstrcat(temp, "/");				
+		if (path[path_size - 1] != '/')
+		{
+			hstrcat(temp, "/");
 		}
 		hstrcat(temp, value);
-		found = lstat(temp, &stat) == 0; 
+		found = lstat(temp, &stat) == 0;
 	}
-	
-	if (!found) {
+	if (!found)
+	{
 		free(temp);
 		temp = NULL;
 	}
 
-	return temp;
+	return (temp);
 }
