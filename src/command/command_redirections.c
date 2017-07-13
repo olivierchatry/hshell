@@ -51,6 +51,7 @@ int handle_heredoc(shell_t *shell, command_t *cmd, int *status)
 	size_t size;
 	ssize_t ret;
 	int fd;
+	char *ps2 = env_get(shell, "PS2");
 
 	fd = open(HEREDOC_BUFFER_FILE, O_WRONLY | O_CREAT | O_TRUNC,
 		S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
@@ -62,8 +63,6 @@ int handle_heredoc(shell_t *shell, command_t *cmd, int *status)
 	}
 	while (42)
 	{
-		char *ps2 = env_get(shell, "PS2");
-
 		ps2 = prompt_expand(shell, ps2 ? ps2 : "> ");
 		write(1, ps2, hstrlen(ps2));
 		free(ps2);

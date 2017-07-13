@@ -1,7 +1,7 @@
 #include <hshell.h>
 #include "utils/hlib.h"
 
-#define ISQUOTE(c) ( (c == '"') || (c == '\''))
+#define ISQUOTE(c) ((c == '"') || (c == '\''))
 
 void command_remove_quote_str(char *str)
 {

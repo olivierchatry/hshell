@@ -3,7 +3,8 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-static void command_exec_child(shell_t *shell, command_chain_t *chain, command_t *cmd)
+static void command_exec_child(shell_t *shell, command_chain_t *chain,
+	command_t *cmd)
 {
 	char *exec_path = path_expand(shell, cmd->argv[0]);
 
@@ -44,6 +45,48 @@ void restore_std_fd(shell_t *shell)
 	unlink(HEREDOC_BUFFER_FILE);
 }
 
+int fork_and_exec(shell_t *shell, command_chain_t *chain, command_t *cmd)
+{
+	int status = 0;
+	int pid = fork();
+
+	if (pid)
+	{
+		if (cmd->redirect_type == SHELL_OP_REDIRECT_PIPE_OUT)
+			close(shell->pipefd[PIPE_WR]);
+		else if (cmd->redirect_type == SHELL_OP_REDIRECT_PIPE_IN)
+			close(shell->pipefd[PIPE_RD]);
+
+		waitpid(pid, &status, 0);
+		shell->child_exit_code = WEXITSTATUS(status);
+	}
+	else
+	{
+		if (cmd->redirect_type == SHELL_OP_REDIRECT_PIPE_OUT)
+		{
+			if (dup2(shell->pipefd[PIPE_WR], STDOUT_FILENO) == -1)
+			{
+				perror("hsh: dup2");
+				_exit(EXIT_FAILURE);
+			}
+			close(shell->pipefd[PIPE_RD]);
+			close(shell->pipefd[PIPE_WR]);
+		}
+		else if (cmd->redirect_type == SHELL_OP_REDIRECT_PIPE_IN)
+		{
+			if (dup2(shell->pipefd[PIPE_RD], STDIN_FILENO) == -1)
+			{
+				perror("hsh: dup2");
+				_exit(EXIT_FAILURE);
+			}
+			close(shell->pipefd[PIPE_RD]);
+			close(shell->pipefd[PIPE_WR]);
+		}
+		command_exec_child(shell, chain, cmd);
+	}
+	return (status);
+}
+
 void command_exec(shell_t *shell, command_chain_t *chain)
 {
 	int	status = 0;
@@ -63,42 +106,7 @@ void command_exec(shell_t *shell, command_chain_t *chain)
 			}
 			else if (!command_builtins(shell, cmd, &status))
 			{
-				int pid = fork();
-
-				if (pid)
-				{
-					if (cmd->redirect_type == SHELL_OP_REDIRECT_PIPE_OUT)
-						close(shell->pipefd[PIPE_WR]);
-					else if (cmd->redirect_type == SHELL_OP_REDIRECT_PIPE_IN)
-						close(shell->pipefd[PIPE_RD]);
-
-					waitpid(pid, &status, 0);
-					shell->child_exit_code = WEXITSTATUS(status);
-				}
-				else
-				{
-					if (cmd->redirect_type == SHELL_OP_REDIRECT_PIPE_OUT)
-					{
-						if (dup2(shell->pipefd[PIPE_WR], STDOUT_FILENO) == -1)
-						{
-							perror("hsh: dup2");
-							_exit(EXIT_FAILURE);
-						}
-						close(shell->pipefd[PIPE_RD]);
-						close(shell->pipefd[PIPE_WR]);
-					}
-					else if (cmd->redirect_type == SHELL_OP_REDIRECT_PIPE_IN)
-					{
-						if (dup2(shell->pipefd[PIPE_RD], STDIN_FILENO) == -1)
-						{
-							perror("hsh: dup2");
-							_exit(EXIT_FAILURE);
-						}
-						close(shell->pipefd[PIPE_RD]);
-						close(shell->pipefd[PIPE_WR]);
-					}
-					command_exec_child(shell, chain, cmd);
-				}
+				status = fork_and_exec(shell, chain, cmd);
 			}
 			else
 			{
@@ -107,9 +115,11 @@ void command_exec(shell_t *shell, command_chain_t *chain)
 			shell->exit_code = shell->child_exit_code;
 			restore_std_fd(shell);
 
-			if (((status == 0) && (cmd->op == SHELL_OP_OR)) || ((status != 0) && (cmd->op == SHELL_OP_AND)))
+			if (((status == 0) && (cmd->op == SHELL_OP_OR)) ||
+				((status != 0) && (cmd->op == SHELL_OP_AND)))
 			{
-				while (chain->root.commands[index] && chain->root.commands[index]->op == cmd->op)
+				while (chain->root.commands[index] &&
+					chain->root.commands[index]->op == cmd->op)
 				{
 					index++;
 				}
