@@ -9,11 +9,15 @@
 
 /**
  * signal_interrupt - Catch SIGINT (CTRL+C)
- * @signal: Signal number
+ * @signum: Signal number
+ * @siginfo: Information on the signal
+ * @context: Unused context
  */
-void signal_interrupt(int signal)
+void signal_interrupt(int signum, siginfo_t *siginfo, void *context)
 {
-	UNUSED(signal);
+	UNUSED(signum);
+	UNUSED(siginfo);
+	UNUSED(context);
 }
 
 /**
@@ -46,6 +50,8 @@ void shell_set_fd(shell_t *shell, int argc, char *argv[])
  */
 void shell_init(shell_t *shell, int argc, char *argv[], char *envp[])
 {
+	struct sigaction action;
+
 	shell->state = SHELL_STATE_INIT;
 	ARRAY_INIT(shell->env_keys);
 	ARRAY_INIT(shell->env_values);
@@ -78,5 +84,7 @@ void shell_init(shell_t *shell, int argc, char *argv[], char *envp[])
 	}
 	shell->state = SHELL_STATE_RUN;
 	env_hook(shell, "");
-	signal(SIGINT, signal_interrupt);
+	action.sa_sigaction = &signal_interrupt;
+	action.sa_flags |= SA_SIGINFO;
+	sigaction(SIGINT, &action, NULL);
 }
