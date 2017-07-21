@@ -5,6 +5,8 @@ vgcore.*
 .depend
 build
 test
+test_dir
+hsh
 
 # Compiled source #
 ###################

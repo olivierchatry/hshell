@@ -5,13 +5,20 @@
 #include <sys/types.h>
 #include <pwd.h>
 
-const char *util_get_user() {
-	const char		*user = NULL;
+/**
+ * util_get_user - Retrieve the user's name
+ *
+ * Return: User name
+ */
+const char *util_get_user(void)
+{
+	const char *user = NULL;
 	struct passwd *pws;
-	
+
 	pws = getpwuid(geteuid());
-	if (pws) {
+	if (pws)
+	{
 		user = pws->pw_name;
 	}
-	return user;
+	return (user);
 }

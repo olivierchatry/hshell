@@ -1,7 +1,6 @@
 #ifndef __HLIB_H__
 #define __HLIB_H__
 
-int hprint_error(const char *command, const char *msg, ...);
 int		hstrcmp(const char *a, const char *b);
 int		hstrncmp(const char *a, const char *b, int n);
 int		hstrlen(const char *str);

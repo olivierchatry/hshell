@@ -1,5 +1,10 @@
 #include <hshell.h>
 
-void env_free_envp(shell_t *shell) {
+/**
+ * env_free_envp - Deallocates envp
+ * @shell: Shell structure
+ */
+void env_free_envp(shell_t *shell)
+{
 	ARRAY_FREE_EACH(shell->envp);
 }

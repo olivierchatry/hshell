@@ -1,8 +1,9 @@
 BUILD_DIR = ./build
-TARGET=simple_shell
+TARGET=hsh
 
-SRCS=src/main.c \
+SRCS=	src/main.c \
 	src/command/command_get.c \
+	src/command/command_run.c \
 	src/command/command_free.c \
 	src/command/command_init.c \
 	src/command/command_exec.c \
@@ -12,7 +13,9 @@ SRCS=src/main.c \
 	src/command/command_remove_comment.c \
 	src/command/command_remove_quote.c \
 	src/command/command_clone.c \
+	src/command/command_redirections.c \
 	src/shell/shell_init.c \
+	src/shell/shellrc_load.c \
 	src/shell/shell_free.c \
 	src/shell/shell_getcwd.c \
 	src/alias/alias_get_index.c \
@@ -44,8 +47,16 @@ SRCS=src/main.c \
 	src/utils/util_read_file.c \
 	src/utils/util_get_user.c \
 	src/utils/util_get_hostname.c \
+	src/utils/hperror.c \
 	src/prompt/prompt_print.c \
-	src/prompt/prompt_expand.c 
+	src/prompt/prompt_expand.c \
+	src/prompt/prompt_date.c \
+	src/prompt/prompt_hostname.c \
+	src/prompt/prompt_shell.c \
+	src/prompt/prompt_user.c \
+	src/prompt/prompt_version.c \
+	src/prompt/prompt_current_folder.c \
+	src/prompt/prompt_uid.c
 
 OBJS = $(SRCS:%.c=$(BUILD_DIR)/%.o)
 DEPS=$(OBJS:%.o=%.d)
@@ -66,3 +77,7 @@ $(BUILD_DIR)/%.o : %.c
 .PHONY : clean
 clean:
 	$(RM) $(OBJS) $(DEPS) $(TARGET) vgcore*
+	$(RM) -r $(BUILD_DIR)
+
+.PHONY	: re
+re	: clean all
