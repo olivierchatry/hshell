@@ -120,6 +120,8 @@ void builtin_cd(shell_t *shell, command_t *cmd, int *status)
 		if (hstrcmp(path, "-") == 0)
 		{
 			path = env_get(shell, "OLDPWD");
+			if (!path)
+				path = env_get(shell, "PWD");
 			print_pwd = 1;
 		}
 	}
