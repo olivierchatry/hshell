@@ -105,13 +105,6 @@ void builtin_unsetenv(shell_t *shell, command_t *cmd, int *status)
 void builtin_cd(shell_t *shell, command_t *cmd, int *status)
 {
 	const char *path = NULL;
-	const struct err_handler_s errors[] = {
-		{EACCES, "can't cd to"},
-		{ELOOP, "Too many symbolic links"},
-		{ENOENT, "No such directory"},
-		{ENOTDIR, "Not a directory"},
-		{0, NULL}
-	};
 	char print_pwd = 0;
 
 	if (cmd->argv_size > 2)
@@ -141,25 +134,7 @@ void builtin_cd(shell_t *shell, command_t *cmd, int *status)
 		}
 		else
 		{
-			int i;
-			char resolved = 0;
-
-			for (i = 0; errors[i].str != NULL; i++)
-			{
-				if (errno == errors[i].code)
-				{
-					hperror(shell, "cd", "%s %s\n",
-						errors[i].str,
-						path);
-					resolved = 1;
-					break;
-				}
-			}
-			if (!resolved)
-			{
-				/* chdir: Default failure message */
-				hperror(shell, "cd", "cannot cd to %s\n", path);
-			}
+			hperror(shell, "cd", "can't cd to %s\n", path);
 		}
 	}
 	shell_getcwd(shell);
