@@ -106,7 +106,7 @@ void builtin_cd(shell_t *shell, command_t *cmd, int *status)
 {
 	const char *path = NULL;
 	const struct err_handler_s errors[] = {
-		{EACCES, "Permission denied"},
+		{EACCES, "can't cd to"},
 		{ELOOP, "Too many symbolic links"},
 		{ENOENT, "No such directory"},
 		{ENOTDIR, "Not a directory"},
@@ -148,7 +148,9 @@ void builtin_cd(shell_t *shell, command_t *cmd, int *status)
 			{
 				if (errno == errors[i].code)
 				{
-					hperror(shell, "cd", "%s\n", errors[i].str);
+					hperror(shell, "cd", "%s %s\n",
+						errors[i].str,
+						path);
 					resolved = 1;
 					break;
 				}
