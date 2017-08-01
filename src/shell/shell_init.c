@@ -35,8 +35,10 @@ void shell_set_fd(shell_t *shell, int argc, char *argv[])
 		shell->fd = open(argv[1], O_RDONLY, 0);
 		if (shell->fd <= 0)
 		{
+			hperror(shell, "",
+				"Can't open %s\n", argv[1]);
 			shell->exit = true;
-			shell->exit_code = -1;
+			shell->exit_code = 127;
 		}
 	}
 }

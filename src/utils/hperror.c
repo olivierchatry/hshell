@@ -17,8 +17,10 @@ int hperror(shell_t *shell, const char *command, const char *msg, ...)
 	int ret;
 
 	va_start(args, msg);
-	ret = fprintf(stderr, "%s: %d: %s: ",
-		shell->shell_program, shell->line_no, command);
+	ret = fprintf(stderr, "%s: %d: ",
+		shell->shell_program, shell->line_no);
+	if (command && *command)
+		fprintf(stderr, "%s: ", command);
 	ret += vfprintf(stderr, msg, args);
 	fflush(stderr);
 	va_end(args);
