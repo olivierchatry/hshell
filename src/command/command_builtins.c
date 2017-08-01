@@ -26,7 +26,7 @@ void builtin_alias(shell_t *shell, command_t *cmd, int *status)
 	{
 		for (index = 0; index < shell->alias_keys_size; ++index)
 		{
-			hprintf("%s=%s\n", shell->alias_keys[index], shell->alias_commands[index]->line);
+			hprintf("%s='%s'\n", shell->alias_keys[index], shell->alias_commands[index]->line);
 		}
 	}
 	else
@@ -112,6 +112,7 @@ void builtin_cd(shell_t *shell, command_t *cmd, int *status)
 		{ENOTDIR, "Not a directory"},
 		{0, NULL}
 	};
+	char print_pwd = 0;
 
 	if (cmd->argv_size > 2)
 	{
@@ -119,6 +120,7 @@ void builtin_cd(shell_t *shell, command_t *cmd, int *status)
 		if (hstrcmp(path, "-") == 0)
 		{
 			path = env_get(shell, "OLDPWD");
+			print_pwd = 1;
 		}
 	}
 	else
@@ -131,6 +133,8 @@ void builtin_cd(shell_t *shell, command_t *cmd, int *status)
 		*status = chdir(path) * -2;
 		if (*status == 0)
 		{
+			if (print_pwd)
+				hprintf("%s\n", path);
 			env_set(shell, "OLDPWD", env_get(shell, "PWD"));
 		}
 		else
