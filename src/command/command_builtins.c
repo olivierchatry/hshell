@@ -81,7 +81,8 @@ void builtin_exit(shell_t *shell, command_t *cmd, int *status)
 		}
 		else
 		{
-			hperror(shell, "exit", "illegal number\n");
+			hperror(shell, "exit", "Illegal number: %s\n",
+				cmd->argv[1]);
 			shell->exit = 0;
 			*status = 2;
 		}
