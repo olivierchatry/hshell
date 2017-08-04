@@ -64,7 +64,7 @@ void builtin_setenv(shell_t *shell, command_t *cmd, int *status)
 	}
 	else
 	{
-		hprintf("missing argument\n");
+		hperror(shell, "setenv", "missing argument\n");
 		*status = -1;
 	}
 }
@@ -98,7 +98,7 @@ void builtin_unsetenv(shell_t *shell, command_t *cmd, int *status)
 	}
 	else
 	{
-		hprintf("missing argument\n");
+		hperror(shell, "unsetenv", "missing argument\n");
 		*status = -1;
 	}
 }

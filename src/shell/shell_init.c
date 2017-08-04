@@ -87,6 +87,7 @@ void shell_init(shell_t *shell, int argc, char *argv[], char *envp[])
 	shell->state = SHELL_STATE_RUN;
 	env_hook(shell, "");
 	action.sa_sigaction = &signal_interrupt;
-	action.sa_flags |= SA_SIGINFO;
+	action.sa_flags = SA_SIGINFO;
+	sigemptyset(&action.sa_mask);
 	sigaction(SIGINT, &action, NULL);
 }

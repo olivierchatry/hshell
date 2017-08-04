@@ -60,7 +60,7 @@ SRCS=	src/main.c \
 
 OBJS = $(SRCS:%.c=$(BUILD_DIR)/%.o)
 DEPS=$(OBJS:%.o=%.d)
-CFLAGS=-I. -I./src -g -O0 -Wall -Werror -Wextra -pedantic
+CFLAGS=-I. -I./src -g3 -O0 -Wall -Werror -Wextra -pedantic
 RM=rm -f
 
 all: $(TARGET)
