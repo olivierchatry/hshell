@@ -21,7 +21,7 @@ SRCS=	src/main.c \
 	src/alias/alias_get_index.c \
 	src/alias/alias_get.c \
 	src/alias/alias_set.c \
-	src/alias/alias_add.c \
+	src/alias/alias_handle.c \
 	src/alias/alias_expand.c \
 	src/env/env_get_index.c \
 	src/env/env_get.c \

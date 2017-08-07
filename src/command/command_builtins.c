@@ -33,7 +33,7 @@ void builtin_alias(shell_t *shell, command_t *cmd, int *status)
 	{
 		for (index = 1; index < cmd->argv_size - 1; ++index)
 		{
-			alias_add(shell, cmd->argv[index]);
+			alias_handle(shell, cmd->argv[index]);
 		}
 	}
 	UNUSED(status);
