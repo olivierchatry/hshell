@@ -69,9 +69,19 @@ int handle_heredoc(shell_t *shell, command_t *cmd, int *status)
 	}
 	while (42)
 	{
-		ps2 = prompt_expand(shell, ps2 ? ps2 : "> ");
-		write(1, ps2, hstrlen(ps2));
-		free(ps2);
+		if (shell->is_tty)
+		{
+			if (ps2)
+			{
+				ps2 = prompt_expand(shell, ps2);
+				write(1, ps2, hstrlen(ps2));
+				free(ps2);
+			}
+			else
+			{
+				write(1, "> ", 2);
+			}
+		}
 		ret = getline(&line, &size, stdin);
 		if (ret <= 0)
 			break;

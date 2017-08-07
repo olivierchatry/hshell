@@ -1,7 +1,8 @@
 # TODO
 
  - echo "/bin/ls /hbtn ; echo \$?" | ./hsh --> 0 (should be 2)
- -not found variable should be replaced by empty string
+ - not found variable should be replaced by empty string
+ - Heredoc broken in non-interactive (Probably due to the use of getline instead of read)
 
 ### shell_getcwd.c
 
