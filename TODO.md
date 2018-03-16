@@ -1,6 +1,8 @@
 # TODO
 
- - Implement double left redirection
+ - echo "/bin/ls /hbtn ; echo \$?" | ./hsh --> 0 (should be 2)
+ - not found variable should be replaced by empty string
+ - Heredoc broken in non-interactive (Probably due to the use of getline instead of read)
 
 ### shell_getcwd.c
 
@@ -11,7 +13,3 @@ Example: link named "test" in "/home/user", pointing to "/tmp"
 If we are in this folder, bash will set its PWD to "/home/user/test"
 
 In the current version of this program, the PWD is set to "/tmp"
-
-### command_builtins.c
-
-"exit 1000" gives a status code 232 with bash and sh

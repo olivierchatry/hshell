@@ -26,14 +26,14 @@ void builtin_alias(shell_t *shell, command_t *cmd, int *status)
 	{
 		for (index = 0; index < shell->alias_keys_size; ++index)
 		{
-			hprintf("%s=%s\n", shell->alias_keys[index], shell->alias_commands[index]->line);
+			hprintf("%s='%s'\n", shell->alias_keys[index], shell->alias_commands[index]->line);
 		}
 	}
 	else
 	{
 		for (index = 1; index < cmd->argv_size - 1; ++index)
 		{
-			alias_add(shell, cmd->argv[index]);
+			alias_handle(shell, cmd->argv[index]);
 		}
 	}
 	UNUSED(status);
@@ -64,7 +64,7 @@ void builtin_setenv(shell_t *shell, command_t *cmd, int *status)
 	}
 	else
 	{
-		hprintf("missing argument\n");
+		hperror(shell, "setenv", "missing argument\n");
 		*status = -1;
 	}
 }
@@ -81,7 +81,8 @@ void builtin_exit(shell_t *shell, command_t *cmd, int *status)
 		}
 		else
 		{
-			hperror(shell, "exit", "illegal number\n");
+			hperror(shell, "exit", "Illegal number: %s\n",
+				cmd->argv[1]);
 			shell->exit = 0;
 			*status = 2;
 		}
@@ -97,7 +98,7 @@ void builtin_unsetenv(shell_t *shell, command_t *cmd, int *status)
 	}
 	else
 	{
-		hprintf("missing argument\n");
+		hperror(shell, "unsetenv", "missing argument\n");
 		*status = -1;
 	}
 }
@@ -105,13 +106,7 @@ void builtin_unsetenv(shell_t *shell, command_t *cmd, int *status)
 void builtin_cd(shell_t *shell, command_t *cmd, int *status)
 {
 	const char *path = NULL;
-	const struct err_handler_s errors[] = {
-		{EACCES, "Permission denied"},
-		{ELOOP, "Too many symbolic links"},
-		{ENOENT, "No such directory"},
-		{ENOTDIR, "Not a directory"},
-		{0, NULL}
-	};
+	char print_pwd = 0;
 
 	if (cmd->argv_size > 2)
 	{
@@ -119,6 +114,9 @@ void builtin_cd(shell_t *shell, command_t *cmd, int *status)
 		if (hstrcmp(path, "-") == 0)
 		{
 			path = env_get(shell, "OLDPWD");
+			if (!path)
+				path = env_get(shell, "PWD");
+			print_pwd = 1;
 		}
 	}
 	else
@@ -131,27 +129,13 @@ void builtin_cd(shell_t *shell, command_t *cmd, int *status)
 		*status = chdir(path) * -2;
 		if (*status == 0)
 		{
+			if (print_pwd)
+				hprintf("%s\n", path);
 			env_set(shell, "OLDPWD", env_get(shell, "PWD"));
 		}
 		else
 		{
-			int i;
-			char resolved = 0;
-
-			for (i = 0; errors[i].str != NULL; i++)
-			{
-				if (errno == errors[i].code)
-				{
-					hperror(shell, "cd", "%s\n", errors[i].str);
-					resolved = 1;
-					break;
-				}
-			}
-			if (!resolved)
-			{
-				/* chdir: Default failure message */
-				hperror(shell, "cd", "cannot cd to %s\n", path);
-			}
+			hperror(shell, "cd", "can't cd to %s\n", path);
 		}
 	}
 	shell_getcwd(shell);

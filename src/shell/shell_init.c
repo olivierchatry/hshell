@@ -35,8 +35,10 @@ void shell_set_fd(shell_t *shell, int argc, char *argv[])
 		shell->fd = open(argv[1], O_RDONLY, 0);
 		if (shell->fd <= 0)
 		{
+			hperror(shell, "",
+				"Can't open %s\n", argv[1]);
 			shell->exit = true;
-			shell->exit_code = -1;
+			shell->exit_code = 127;
 		}
 	}
 }
@@ -85,6 +87,7 @@ void shell_init(shell_t *shell, int argc, char *argv[], char *envp[])
 	shell->state = SHELL_STATE_RUN;
 	env_hook(shell, "");
 	action.sa_sigaction = &signal_interrupt;
-	action.sa_flags |= SA_SIGINFO;
+	action.sa_flags = SA_SIGINFO;
+	sigemptyset(&action.sa_mask);
 	sigaction(SIGINT, &action, NULL);
 }

@@ -2,6 +2,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <errno.h>
 
 #include <hshell.h>
 #include "utils/hlib.h"
@@ -21,8 +22,13 @@ int handle_in_redirection(shell_t *shell, int *status, char *file)
 	fd = open(file, O_RDONLY);
 	if (fd == -1)
 	{
-		perror("hsh: open");
-		*status = 1;
+		if (errno == EACCES)
+			hperror(shell, NULL, "cannot open %s: Permission denied\n", file);
+		else if (errno == ENOENT)
+			hperror(shell, NULL, "cannot open %s: No such file\n", file);
+		else
+			hperror(shell, NULL, "cannot open %s: Error\n", file);
+		*status = 2;
 		return (0);
 	}
 	shell->saved_std[0] = dup(STDIN_FILENO);
@@ -63,9 +69,19 @@ int handle_heredoc(shell_t *shell, command_t *cmd, int *status)
 	}
 	while (42)
 	{
-		ps2 = prompt_expand(shell, ps2 ? ps2 : "> ");
-		write(1, ps2, hstrlen(ps2));
-		free(ps2);
+		if (shell->is_tty)
+		{
+			if (ps2)
+			{
+				ps2 = prompt_expand(shell, ps2);
+				write(1, ps2, hstrlen(ps2));
+				free(ps2);
+			}
+			else
+			{
+				write(1, "> ", 2);
+			}
+		}
 		ret = getline(&line, &size, stdin);
 		if (ret <= 0)
 			break;

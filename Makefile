@@ -21,7 +21,7 @@ SRCS=	src/main.c \
 	src/alias/alias_get_index.c \
 	src/alias/alias_get.c \
 	src/alias/alias_set.c \
-	src/alias/alias_add.c \
+	src/alias/alias_handle.c \
 	src/alias/alias_expand.c \
 	src/env/env_get_index.c \
 	src/env/env_get.c \
@@ -60,7 +60,7 @@ SRCS=	src/main.c \
 
 OBJS = $(SRCS:%.c=$(BUILD_DIR)/%.o)
 DEPS=$(OBJS:%.o=%.d)
-CFLAGS=-I. -I./src -g -O0 -Wall -Werror -Wextra -pedantic
+CFLAGS=-I. -I./src -g3 -O0 -Wall -Werror -Wextra -pedantic
 RM=rm -f
 
 all: $(TARGET)
