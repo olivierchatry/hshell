@@ -31,7 +31,7 @@ void prompt_cases(shell_t *shell, prompt_t *prompt, char at)
 		{'$', &prompt_uid},
 		{0, NULL}
 	};
-	prompt_handler_t handler;
+	prompt_handler_t handler = NULL;
 	int i;
 
 	for (i = 0; prompt_handlers[i].c; i++)
