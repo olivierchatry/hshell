@@ -25,7 +25,9 @@ void prompt_print(shell_t *shell)
 			}
 		}
 		if (shell->prompt)
+		{
 			ARRAY_FREE(shell->prompt);
+		}
 		shell->prompt = prompt_expand(shell, prompt);
 		hprintf(shell->prompt);
 		fflush(stdout);
